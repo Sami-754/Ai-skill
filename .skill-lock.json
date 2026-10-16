@@ -1,0 +1,196 @@
+{
+  "version": 3,
+  "skills": {
+    "brandkit": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Leonxlnx/taste-skill.git",
+      "skillPath": "skills/brandkit/SKILL.md",
+      "skillFolderHash": "be1f16e544d9e7d8180c60d8632cb2d9335165e5",
+      "installedAt": "2026-10-13T16:33:53.517Z",
+      "updatedAt": "2026-10-13T16:33:53.517Z"
+    },
+    "design-taste-frontend": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Leonxlnx/taste-skill.git",
+      "skillPath": "skills/taste-skill/SKILL.md",
+      "skillFolderHash": "d11cb9568d2f27401ce1f48217721e69ee32637f",
+      "installedAt": "2026-10-13T16:33:53.518Z",
+      "updatedAt": "2026-10-13T16:33:53.518Z"
+    },
+    "design-taste-frontend-v1": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Leonxlnx/taste-skill.git",
+      "skillPath": "skills/taste-skill-v1/SKILL.md",
+      "skillFolderHash": "ed1256012c4c8e403da238ecccf15411f526192a",
+      "installedAt": "2026-10-13T16:33:53.518Z",
+      "updatedAt": "2026-10-13T16:33:53.518Z"
+    },
+    "design-taste-frontend-v2-experimental": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Leonxlnx/taste-skill.git",
+      "skillPath": "skills/taste-skill-v2-experimental/SKILL.md",
+      "skillFolderHash": "f7493a5e6f6b550a1833fd2db42a2a1e433eb9ff",
+      "installedAt": "2026-10-13T16:33:53.518Z",
+      "updatedAt": "2026-10-13T16:33:53.518Z"
+    },
+    "full-output-enforcement": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Leonxlnx/taste-skill.git",
+      "skillPath": "skills/output-skill/SKILL.md",
+      "skillFolderHash": "3dd6ad49b667d15182acddc9d3e4f7763ae33c9c",
+      "installedAt": "2026-10-13T16:33:53.519Z",
+      "updatedAt": "2026-10-13T16:33:53.519Z"
+    },
+    "gpt-taste": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Leonxlnx/taste-skill.git",
+      "skillPath": "skills/gpt-tasteskill/SKILL.md",
+      "skillFolderHash": "838fd5f2d48fd6f4f3171804c549e76b98d2320c",
+      "installedAt": "2026-10-13T16:33:53.519Z",
+      "updatedAt": "2026-10-13T16:33:53.519Z"
+    },
+    "high-end-visual-design": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Leonxlnx/taste-skill.git",
+      "skillPath": "skills/soft-skill/SKILL.md",
+      "skillFolderHash": "1b5943432ddd1b980206968c529a323cc992dbec",
+      "installedAt": "2026-10-13T16:33:53.519Z",
+      "updatedAt": "2026-10-13T16:33:53.519Z"
+    },
+    "image-to-code": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Leonxlnx/taste-skill.git",
+      "skillPath": "skills/image-to-code-skill/SKILL.md",
+      "skillFolderHash": "701b3cb89c061fcf98a98f639e0b0b5c0b492479",
+      "installedAt": "2026-10-13T16:33:53.519Z",
+      "updatedAt": "2026-10-13T16:33:53.519Z"
+    },
+    "imagegen-frontend-mobile": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Leonxlnx/taste-skill.git",
+      "skillPath": "skills/imagegen-frontend-mobile/SKILL.md",
+      "skillFolderHash": "9901fcde67e9506a706912107825fdfb72e01f30",
+      "installedAt": "2026-10-13T16:33:53.520Z",
+      "updatedAt": "2026-10-13T16:33:53.520Z"
+    },
+    "imagegen-frontend-web": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Leonxlnx/taste-skill.git",
+      "skillPath": "skills/imagegen-frontend-web/SKILL.md",
+      "skillFolderHash": "3b5117d349200e33f9c3399344681620079dcc18",
+      "installedAt": "2026-10-13T16:33:53.520Z",
+      "updatedAt": "2026-10-13T16:33:53.520Z"
+    },
+    "industrial-brutalist-ui": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Leonxlnx/taste-skill.git",
+      "skillPath": "skills/brutalist-skill/SKILL.md",
+      "skillFolderHash": "f812ede7e5c34cf680f629911e9f9ac05e416cf4",
+      "installedAt": "2026-10-13T16:33:53.520Z",
+      "updatedAt": "2026-10-13T16:33:53.520Z"
+    },
+    "minimalist-ui": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Leonxlnx/taste-skill.git",
+      "skillPath": "skills/minimalist-skill/SKILL.md",
+      "skillFolderHash": "c99b716035207587e267831561b6510462460ede",
+      "installedAt": "2026-10-13T16:33:53.520Z",
+      "updatedAt": "2026-10-13T16:33:53.520Z"
+    },
+    "redesign-existing-projects": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Leonxlnx/taste-skill.git",
+      "skillPath": "skills/redesign-skill/SKILL.md",
+      "skillFolderHash": "852ac1700e5e7434c3327f2e577a68187b841800",
+      "installedAt": "2026-10-13T16:33:53.521Z",
+      "updatedAt": "2026-10-13T16:33:53.521Z"
+    },
+    "stitch-design-taste": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Leonxlnx/taste-skill.git",
+      "skillPath": "skills/stitch-skill/SKILL.md",
+      "skillFolderHash": "de2038cf286b31f33b397c1308455dbc17ef26f3",
+      "installedAt": "2026-10-13T16:33:53.521Z",
+      "updatedAt": "2026-10-13T16:33:53.521Z"
+    },
+    "find-skills": {
+      "source": "vercel-labs/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vercel-labs/skills.git",
+      "skillPath": "skills/find-skills/SKILL.md",
+      "skillFolderHash": "76a98a285cb0434f3d39e1a873823556330e398b",
+      "installedAt": "2026-10-13T16:33:58.198Z",
+      "updatedAt": "2026-10-13T16:33:58.198Z"
+    },
+    "anti-slop-writing": {
+      "source": "adewale/anti-slop-writing",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/adewale/anti-slop-writing.git",
+      "skillPath": "skills/anti-slop-writing/SKILL.md",
+      "skillFolderHash": "3c75d78ed8fca8fe29581a7557486ba851e7f36a",
+      "installedAt": "2026-10-13T16:41:15.064Z",
+      "updatedAt": "2026-10-13T16:41:15.064Z"
+    },
+    "security-audit": {
+      "source": "cloudflare/security-audit-skill",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/cloudflare/security-audit-skill.git",
+      "skillPath": "skills/security-audit/SKILL.md",
+      "skillFolderHash": "ccbc33ed119b28c3ef7b44a7e2081ab191ad63af",
+      "installedAt": "2026-10-14T10:43:37.455Z",
+      "updatedAt": "2026-10-14T10:43:37.455Z"
+    },
+    "writing-guidelines": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vercel-labs/agent-skills.git",
+      "skillPath": "skills/writing-guidelines/SKILL.md",
+      "skillFolderHash": "17d954cadfb8dec50bf0c707c9e7634be9ae9fe8",
+      "installedAt": "2026-10-14T11:01:18.731Z",
+      "updatedAt": "2026-10-14T11:01:18.731Z"
+    },
+    "web-design-guidelines": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vercel-labs/agent-skills.git",
+      "skillPath": "skills/web-design-guidelines/SKILL.md",
+      "skillFolderHash": "3116f3e62dbd02b44a598b1aa690d2a8938e8f89",
+      "installedAt": "2026-10-14T11:01:18.732Z",
+      "updatedAt": "2026-10-14T11:01:18.732Z"
+    }
+  },
+  "dismissed": {
+    "findSkillsPrompt": true
+  },
+  "lastSelectedAgents": [
+    "amp",
+    "cline",
+    "codex",
+    "cursor",
+    "droid",
+    "gemini-cli",
+    "github-copilot",
+    "kilo",
+    "kimi-code-cli",
+    "opencode",
+    "pi",
+    "warp",
+    "zed",
+    "command-code",
+    "claude-code"
+  ]
+}
