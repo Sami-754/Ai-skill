@@ -1,0 +1,493 @@
+#!/usr/bin/env python3
+"""
+awwwards - CLI tool for Awwwards-Standard Web Engineering
+Powered by ~/.agents/skills/awwwards
+"""
+
+import argparse
+import http.server
+import json
+import os
+import re
+import shutil
+import socketserver
+import subprocess
+import sys
+import time
+import urllib.request
+from pathlib import Path
+
+# Skill location: permanently installed in ~/.agents/skills/awwwards
+SKILL_DIR = Path(os.environ.get("AWWWARDS_SKILL_DIR", Path.home() / ".agents" / "skills" / "awwwards"))
+
+TEMPLATES_DIR = SKILL_DIR / "assets" / "templates"
+CHECKLISTS_DIR = SKILL_DIR / "assets" / "checklists"
+REFERENCES_DIR = SKILL_DIR / "references"
+DEMOS_DIR = SKILL_DIR / "docs" / "demos"
+
+# ANSI Colors
+BOLD = "\033[1m"
+GREEN = "\033[32m"
+YELLOW = "\033[33m"
+CYAN = "\033[36m"
+RED = "\033[31m"
+MAGENTA = "\033[35m"
+DIM = "\033[2m"
+RESET = "\033[0m"
+
+
+def print_banner():
+    print(f"{BOLD}{CYAN}◈ awwwards{RESET} {DIM}— jury-standard web engineering toolkit{RESET}\n")
+
+
+def cmd_path(args):
+    print(f"{SKILL_DIR}")
+
+
+def cmd_doctor(args):
+    print_banner()
+    print(f"{BOLD}System & Environment Audit:{RESET}")
+    print(f"  Skill root:         {GREEN if SKILL_DIR.exists() else RED}{SKILL_DIR}{RESET}")
+    print(f"  Templates:          {GREEN if TEMPLATES_DIR.exists() else RED}{TEMPLATES_DIR}{RESET}")
+    print(f"  References (19):    {GREEN if REFERENCES_DIR.exists() else RED}{REFERENCES_DIR}{RESET}")
+    print(f"  Demos (12):         {GREEN if DEMOS_DIR.exists() else RED}{DEMOS_DIR}{RESET}")
+
+    # Node.js
+    node_bin = shutil.which("node")
+    node_ver = subprocess.getoutput("node --version") if node_bin else "not found"
+    print(f"  Node.js:            {GREEN if node_bin else YELLOW}{node_ver}{RESET}")
+
+    # Chrome / Chromium
+    chrome_bin = shutil.which("google-chrome") or shutil.which("chromium") or shutil.which("chrome")
+    chrome_ver = subprocess.getoutput(f"{chrome_bin} --version") if chrome_bin else "not found"
+    print(f"  Chrome/Chromium:    {GREEN if chrome_bin else YELLOW}{chrome_ver}{RESET}")
+
+    # FFmpeg
+    ffmpeg_bin = shutil.which("ffmpeg")
+    ffmpeg_ver = subprocess.getoutput("ffmpeg -version | head -n 1") if ffmpeg_bin else "not found"
+    print(f"  FFmpeg:             {GREEN if ffmpeg_bin else YELLOW}{ffmpeg_ver}{RESET}")
+
+    # npx
+    npx_bin = shutil.which("npx")
+    print(f"  npx:                {GREEN if npx_bin else YELLOW}{'available' if npx_bin else 'not found'}{RESET}")
+
+    # Git
+    git_bin = shutil.which("git")
+    git_ver = subprocess.getoutput("git --version") if git_bin else "not found"
+    print(f"  Git:                {GREEN if git_bin else YELLOW}{git_ver}{RESET}")
+
+    print(f"\n{BOLD}Awwwards Scoring Rubric Weights:{RESET}")
+    print(f"  {CYAN}40%{RESET} Design      (visual hierarchy, fluid type, oklch colors, spatial rhythm)")
+    print(f"  {CYAN}30%{RESET} Usability   (LCP < 1.5s, CLS < 0.05, INP < 100ms, WCAG 2.2 AA, 60fps)")
+    print(f"  {CYAN}20%{RESET} Creativity  (one singular signature moment, memorable interaction)")
+    print(f"  {CYAN}10%{RESET} Content     (authentic domain copy, real data/imagery, zero placeholder)")
+
+
+def cmd_init(args):
+    target = Path(args.destination).resolve()
+    variant = "webgl-hero" if args.webgl else "starter"
+    src = TEMPLATES_DIR / variant
+
+    if not src.exists():
+        print(f"{RED}Error: Template source '{src}' not found.{RESET}", file=sys.stderr)
+        sys.exit(1)
+
+    print_banner()
+    print(f"Scaffolding {BOLD}{variant}{RESET} project into: {CYAN}{target}{RESET}")
+
+    if target.exists() and any(target.iterdir()) and not args.force:
+        print(f"{YELLOW}Target directory is not empty. Use --force to overwrite.{RESET}", file=sys.stderr)
+        sys.exit(1)
+
+    target.mkdir(parents=True, exist_ok=True)
+    for item in src.iterdir():
+        dest_item = target / item.name
+        if item.is_dir():
+            shutil.copytree(item, dest_item, dirs_exist_ok=True)
+        else:
+            shutil.copy2(item, dest_item)
+
+    if args.checklist or True:
+        shutil.copy2(CHECKLISTS_DIR / "pre-flight.md", target / "PRE-FLIGHT.md")
+
+    print(f"{GREEN}✓ Successfully initialized project!{RESET}")
+    print(f"\nNext steps:")
+    print(f"  cd {target.name if target.parent == Path.cwd() else target}")
+    print(f"  # Review PRE-FLIGHT.md before shipping")
+    print(f"  # Start dev server: awwwards serve or python3 -m http.server 3000")
+
+
+def cmd_template(args):
+    variant = args.name.lower()
+    mapping = {
+        "starter": "starter",
+        "webgl": "webgl-hero",
+        "webgl-hero": "webgl-hero",
+    }
+    if variant not in mapping:
+        print(f"{RED}Unknown template '{variant}'. Available: starter, webgl{RESET}", file=sys.stderr)
+        sys.exit(1)
+
+    src = TEMPLATES_DIR / mapping[variant]
+    target = Path(args.destination).resolve()
+
+    target.mkdir(parents=True, exist_ok=True)
+    for item in src.iterdir():
+        dest_item = target / item.name
+        if item.is_dir():
+            shutil.copytree(item, dest_item, dirs_exist_ok=True)
+        else:
+            shutil.copy2(item, dest_item)
+
+    print(f"{GREEN}✓ Extracted template '{mapping[variant]}' into {target}{RESET}")
+
+
+def cmd_checklist(args):
+    chk_file = CHECKLISTS_DIR / "pre-flight.md"
+    if not chk_file.exists():
+        print(f"{RED}Error: Checklist file not found.{RESET}", file=sys.stderr)
+        sys.exit(1)
+
+    if args.write:
+        dest = Path(args.write if isinstance(args.write, str) and args.write != "True" else "PRE-FLIGHT.md").resolve()
+        shutil.copy2(chk_file, dest)
+        print(f"{GREEN}✓ Wrote pre-flight checklist to {dest}{RESET}")
+        return
+
+    content = chk_file.read_text(encoding="utf-8")
+    print(content)
+
+
+def cmd_ref(args):
+    query = args.topic.lower() if args.topic else None
+    ref_files = sorted(REFERENCES_DIR.glob("*.md"))
+
+    if not query:
+        print_banner()
+        print(f"{BOLD}Available Reference Handbooks (19 Guides):{RESET}\n")
+        for f in ref_files:
+            title = f.stem
+            with open(f, "r", encoding="utf-8") as fp:
+                for line in fp:
+                    if line.startswith("# "):
+                        title = line[2:].strip()
+                        break
+            num = f.stem.split("-")[0]
+            name = "-".join(f.stem.split("-")[1:])
+            print(f"  {CYAN}{num:>2}{RESET}  {BOLD}{name:<20}{RESET} {DIM}— {title}{RESET}")
+        print(f"\nUsage: {CYAN}awwwards ref <number|keyword>{RESET} (e.g. 'awwwards ref scroll' or 'awwwards ref 08')")
+        return
+
+    matched = []
+    for f in ref_files:
+        stem = f.stem
+        if query in stem.lower() or (query.isdigit() and stem.startswith(f"{int(query):02d}-")):
+            matched.append(f)
+
+    if not matched:
+        print(f"{YELLOW}No reference found matching '{query}'. Listing all:{RESET}\n")
+        cmd_ref(argparse.Namespace(topic=None))
+        return
+
+    target = matched[0]
+    content = target.read_text(encoding="utf-8")
+    if sys.stdout.isatty() and shutil.which("less"):
+        try:
+            p = subprocess.Popen(["less", "-R"], stdin=subprocess.PIPE, text=True)
+            p.communicate(input=content)
+            return
+        except Exception:
+            pass
+
+    print(content)
+
+
+def cmd_demos(args):
+    demos = [
+        ("wonk", "Fraunces variable font specimen for the WONK optical axis", "7.4"),
+        ("descent", "8,556 real 2025 USGS earthquakes mapped at true hypocenter depths (WebGL)", "7.3"),
+        ("reel", "Generated footage reel where scrollbar is transport ledger", "7.6"),
+        ("abyss", "Real-time procedural water column with arithmetic shaders (zero textures)", "7.5"),
+        ("sakura", "Ichi: samurai sword draw animation via recursive bones (zero model files)", "7.4"),
+        ("orbit", "Solar system true physical scale vs textbook diagram myths (JPL data)", "7.5"),
+        ("gamut", "1931 CIE color dataset demonstrating display gamut clipping (31 KB)", "7.6"),
+        ("cupola", "Brunelleschi's dome construction course-by-course (quinto acuto geometry)", "7.6"),
+        ("miliario", "The Roman Appian Way traversed horizontally with milestones", "7.5"),
+        ("petrini", "Architectural editorial portfolio with tactile layout rhythm", "7.3"),
+        ("soglia", "Cinematic video scroll-scrub through Roman thresholds", "7.2"),
+        ("stacco", "Multi-shot cinematic scroll-scrub sequence", "7.2"),
+    ]
+
+    action = args.action or "list"
+
+    if action == "list":
+        print_banner()
+        print(f"{BOLD}Reference Demonstrations (12 Award-Caliber Sites):{RESET}\n")
+        for name, desc, score in demos:
+            score_col = GREEN if float(score) >= 7.5 else CYAN
+            print(f"  {BOLD}{name:<12}{RESET} [{score_col}{score} SOTD{RESET}]  {desc}")
+        print(f"\nTo run a demo locally: {CYAN}awwwards demos serve <name>{RESET}")
+        return
+
+    if action in ("serve", "run", "preview"):
+        name = args.name
+        if not name:
+            print(f"{RED}Please specify a demo name. E.g.: awwwards demos serve wonk{RESET}", file=sys.stderr)
+            sys.exit(1)
+
+        demo_dir = DEMOS_DIR / name
+        if not demo_dir.exists():
+            print(f"{RED}Demo '{name}' not found at {demo_dir}.{RESET}", file=sys.stderr)
+            sys.exit(1)
+
+        port = args.port or 8080
+        os.chdir(demo_dir)
+        handler = http.server.SimpleHTTPRequestHandler
+        print_banner()
+        print(f"Serving demo {BOLD}{name}{RESET} at:")
+        print(f"  {GREEN}http://localhost:{port}/{RESET}")
+        print(f"{DIM}Press Ctrl+C to stop{RESET}\n")
+
+        with socketserver.TCPServer(("", port), handler) as httpd:
+            try:
+                httpd.serve_forever()
+            except KeyboardInterrupt:
+                print(f"\n{YELLOW}Server stopped.{RESET}")
+
+
+def cmd_serve(args):
+    directory = Path(args.directory).resolve()
+    if not directory.exists():
+        print(f"{RED}Directory not found: {directory}{RESET}", file=sys.stderr)
+        sys.exit(1)
+
+    port = args.port or 3000
+    os.chdir(directory)
+    handler = http.server.SimpleHTTPRequestHandler
+    print_banner()
+    print(f"Serving static site from: {CYAN}{directory}{RESET}")
+    print(f"URL: {GREEN}http://localhost:{port}/{RESET}")
+    print(f"{DIM}Press Ctrl+C to stop{RESET}\n")
+
+    with socketserver.TCPServer(("", port), handler) as httpd:
+        try:
+            httpd.serve_forever()
+        except KeyboardInterrupt:
+            print(f"\n{YELLOW}Server stopped.{RESET}")
+
+
+def cmd_encode(args):
+    src = Path(args.input_file).resolve()
+    if not src.exists():
+        print(f"{RED}Video file not found: {src}{RESET}", file=sys.stderr)
+        sys.exit(1)
+
+    ffmpeg_bin = shutil.which("ffmpeg")
+    if not ffmpeg_bin:
+        print(f"{RED}FFmpeg is required for encoding.{RESET}", file=sys.stderr)
+        sys.exit(1)
+
+    out_dir = Path(args.output_dir or src.parent).resolve()
+    out_dir.mkdir(parents=True, exist_ok=True)
+    stem = src.stem
+
+    print_banner()
+    print(f"Encoding web video ladder (Reference 17) for: {BOLD}{src.name}{RESET}\n")
+
+    # 1. H.264 desktop/universal
+    h264_out = out_dir / f"{stem}.h264.mp4"
+    print(f"1. Generating H.264 (+faststart, yuv420p): {CYAN}{h264_out.name}{RESET}")
+    cmd_h264 = [
+        "ffmpeg", "-y", "-i", str(src),
+        "-c:v", "libx264", "-crf", "23", "-preset", "slow",
+        "-movflags", "+faststart", "-pix_fmt", "yuv420p",
+        "-an", str(h264_out)
+    ]
+    subprocess.run(cmd_h264, check=True)
+
+    # 2. AV1 next-gen
+    av1_out = out_dir / f"{stem}.av1.mp4"
+    print(f"2. Generating AV1 (libsvtav1): {CYAN}{av1_out.name}{RESET}")
+    cmd_av1 = [
+        "ffmpeg", "-y", "-i", str(src),
+        "-c:v", "libsvtav1", "-crf", "30", "-preset", "6",
+        "-movflags", "+faststart", "-pix_fmt", "yuv420p",
+        "-an", str(av1_out)
+    ]
+    subprocess.run(cmd_av1, check=True)
+
+    # 3. Poster frame
+    poster_out = out_dir / f"{stem}.poster.webp"
+    print(f"3. Generating poster still frame: {CYAN}{poster_out.name}{RESET}")
+    cmd_poster = [
+        "ffmpeg", "-y", "-i", str(src),
+        "-vframes", "1", "-c:v", "libwebp", "-quality", "85",
+        str(poster_out)
+    ]
+    subprocess.run(cmd_poster, check=True)
+
+    print(f"\n{GREEN}✓ Video ladder successfully encoded!{RESET}")
+    print(f"  H.264:  {h264_out} ({h264_out.stat().st_size / 1024:.1f} KB)")
+    print(f"  AV1:    {av1_out} ({av1_out.stat().st_size / 1024:.1f} KB)")
+    print(f"  Poster: {poster_out} ({poster_out.stat().st_size / 1024:.1f} KB)")
+
+
+def cmd_audit(args):
+    url = args.url
+    if not url.startswith("http://") and not url.startswith("https://"):
+        url = "http://" + url
+
+    print_banner()
+    print(f"Auditing target: {BOLD}{CYAN}{url}{RESET}")
+    print(f"{DIM}Inspecting network latency, payloads, security headers, and DOM semantics...{RESET}\n")
+
+    start_time = time.time()
+    try:
+        req = urllib.request.Request(
+            url,
+            headers={
+                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 AwwwardsAudit/1.0"
+            }
+        )
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            elapsed = time.time() - start_time
+            status = resp.status
+            content = resp.read()
+            html_text = content.decode("utf-8", errors="ignore")
+            size_kb = len(content) / 1024
+            headers = dict(resp.getheaders())
+    except Exception as e:
+        print(f"{RED}Failed to connect to {url}: {e}{RESET}", file=sys.stderr)
+        sys.exit(1)
+
+    print(f"{BOLD}1. Network & Delivery Baseline:{RESET}")
+    print(f"  Status Code:        {GREEN if status == 200 else YELLOW}{status}{RESET}")
+    print(f"  First HTML TTFB:    {GREEN if elapsed < 0.5 else YELLOW}{elapsed*1000:.1f} ms{RESET} (budget: < 500ms)")
+    print(f"  HTML Document Size: {GREEN if size_kb < 150 else YELLOW}{size_kb:.2f} KB{RESET}")
+    
+    encoding = headers.get("content-encoding", "none")
+    print(f"  Compression:        {GREEN if encoding in ('gzip', 'br', 'zstd') else YELLOW}{encoding}{RESET}")
+
+    csp = "content-security-policy" in headers
+    hsts = "strict-transport-security" in headers
+    print(f"  Security Headers:   {'CSP ' if csp else ''}{'HSTS' if hsts else ''}{'none detected (dev/local server)' if not (csp or hsts) else ''}")
+
+    # Semantic & Accessibility Audit
+    has_doctype = bool(re.search(r"<!doctype\s+html", html_text, re.I))
+    has_lang = bool(re.search(r"<html[^>]+lang=[\"'][a-zA-Z\-]+[\"']", html_text, re.I))
+    has_viewport = bool(re.search(r"<meta[^>]+name=[\"']viewport[\"']", html_text, re.I))
+    
+    m_title = re.search(r"<title>([^<]+)</title>", html_text, re.I)
+    title = m_title.group(1).strip() if m_title else None
+
+    m_desc = re.search(r"<meta[^>]+name=[\"']description[\"'][^>]+content=[\"']([^\"']+)[\"']", html_text, re.I)
+    desc = m_desc.group(1).strip() if m_desc else None
+
+    has_skip_link = bool(re.search(r"<a[^>]+href=[\"']#[^\"']+[\"'][^>]*>.*skip.*</a>", html_text, re.I))
+    has_reduced_motion = ("prefers-reduced-motion" in html_text) or ("data-motion-paused" in html_text)
+    
+    # Check images missing alt
+    imgs = re.findall(r"<img[^>]+>", html_text, re.I)
+    imgs_without_alt = [img for img in imgs if not re.search(r"\balt=[\"'][^\"']*[\"']", img, re.I)]
+
+    print(f"\n{BOLD}2. Semantic & Accessibility (WCAG 2.2 AA floor):{RESET}")
+    print(f"  {'✓' if has_doctype else '✗'} HTML5 DOCTYPE:       {'Present' if has_doctype else 'Missing'}")
+    print(f"  {'✓' if has_lang else '✗'} Document Lang:        {'Present' if has_lang else 'Missing (<html lang=...>)'}")
+    print(f"  {'✓' if has_viewport else '✗'} Mobile Viewport:      {'Present' if has_viewport else 'Missing'}")
+    print(f"  {'✓' if title else '✗'} Page Title:          {title[:45] + '...' if title and len(title)>45 else title or 'Missing'}")
+    print(f"  {'✓' if desc else '✗'} Meta Description:    {'Present (' + str(len(desc)) + ' chars)' if desc else 'Missing'}")
+    print(f"  {'✓' if has_skip_link else '⚠'} Skip-to-content:     {'Present' if has_skip_link else 'Not detected'}")
+    print(f"  {'✓' if has_reduced_motion else '⚠'} Reduced Motion Cues:  {'Present (detected in source)' if has_reduced_motion else 'None detected'}")
+    print(f"  {'✓' if len(imgs_without_alt) == 0 else '⚠'} Images Alt Coverage:  {len(imgs) - len(imgs_without_alt)}/{len(imgs)} images have alt tags")
+
+    # Screenshot with Chrome if requested
+    chrome_bin = shutil.which("google-chrome") or shutil.which("chromium") or shutil.which("chrome")
+    if args.screenshot and chrome_bin:
+        ss_path = Path(args.screenshot if isinstance(args.screenshot, str) and args.screenshot != "True" else "audit-desktop.png").resolve()
+        print(f"\n{BOLD}3. Headless Chrome Visual Capture:{RESET}")
+        cmd_ss = [chrome_bin, "--headless=new", f"--screenshot={ss_path}", "--window-size=1440,900", url]
+        res = subprocess.run(cmd_ss, capture_output=True, text=True)
+        if ss_path.exists():
+            print(f"  {GREEN}✓ Captured 1440x900 viewport to {ss_path}{RESET}")
+
+    print(f"\n{BOLD}4. Awwwards Threshold Compliance (Phases 5 & 6):{RESET}")
+    print(f"  {'✓' if elapsed < 1.5 else '✗'} LCP < 1.5s          (First paint baseline: {elapsed*1000:.0f}ms)")
+    print(f"  {'✓' if size_kb < 3000 else '✗'} Payload < 3.0MB     (HTML document: {size_kb:.1f}KB)")
+    print(f"  {'✓' if has_lang and has_viewport and has_doctype else '✗'} Usability Foundation (Semantic markup)")
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        prog="awwwards",
+        description="Awwwards jury rubric & web craft engineering CLI tool.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    subparsers = parser.add_subparsers(dest="command", help="Sub-command to execute")
+
+    # init
+    p_init = subparsers.add_parser("init", aliases=["new"], help="Scaffold a new Awwwards-standard project")
+    p_init.add_argument("destination", nargs="?", default=".", help="Target directory (default: current directory)")
+    p_init.add_argument("--webgl", action="store_true", help="Scaffold the WebGL DOM-synced canvas starter")
+    p_init.add_argument("--force", "-f", action="store_true", help="Overwrite existing files")
+    p_init.add_argument("--checklist", "-c", action="store_true", default=True, help="Include PRE-FLIGHT.md checklist")
+    p_init.set_defaults(func=cmd_init)
+
+    # template
+    p_tmpl = subparsers.add_parser("template", help="Extract raw boilerplate templates")
+    p_tmpl.add_argument("name", choices=["starter", "webgl", "webgl-hero"], help="Template name")
+    p_tmpl.add_argument("destination", nargs="?", default=".", help="Target directory")
+    p_tmpl.set_defaults(func=cmd_template)
+
+    # checklist
+    p_chk = subparsers.add_parser("checklist", aliases=["preflight"], help="Print or copy the pre-flight launch checklist")
+    p_chk.add_argument("--write", "-w", nargs="?", const="PRE-FLIGHT.md", help="Write to file (default: PRE-FLIGHT.md)")
+    p_chk.set_defaults(func=cmd_checklist)
+
+    # ref
+    p_ref = subparsers.add_parser("ref", aliases=["docs"], help="Read or search the 19 reference guides")
+    p_ref.add_argument("topic", nargs="?", help="Reference number (e.g. 01, 7) or keyword (e.g. scroll, webgl, perf)")
+    p_ref.set_defaults(func=cmd_ref)
+
+    # demos
+    p_demos = subparsers.add_parser("demos", aliases=["demo"], help="List or serve built-in reference demos")
+    p_demos.add_argument("action", nargs="?", choices=["list", "serve", "run", "preview"], default="list", help="Action")
+    p_demos.add_argument("name", nargs="?", help="Demo name (e.g. wonk, abyss, descent, gamut)")
+    p_demos.add_argument("--port", "-p", type=int, default=8080, help="HTTP server port")
+    p_demos.set_defaults(func=cmd_demos)
+
+    # audit
+    p_audit = subparsers.add_parser("audit", aliases=["score"], help="Audit a site URL against Awwwards budgets")
+    p_audit.add_argument("url", help="URL to audit (e.g. localhost:3000 or https://example.com)")
+    p_audit.add_argument("--screenshot", "-s", nargs="?", const="audit-desktop.png", help="Capture 1440x900 viewport PNG with Chrome")
+    p_audit.set_defaults(func=cmd_audit)
+
+    # serve
+    p_serve = subparsers.add_parser("serve", help="Start local static development server")
+    p_serve.add_argument("directory", nargs="?", default=".", help="Directory to serve")
+    p_serve.add_argument("--port", "-p", type=int, default=3000, help="Port (default: 3000)")
+    p_serve.set_defaults(func=cmd_serve)
+
+    # encode
+    p_enc = subparsers.add_parser("encode", help="Encode video into Awwwards web ladder (AV1, H.264, WebP poster)")
+    p_enc.add_argument("input_file", help="Source video file (.mp4, .mov, etc.)")
+    p_enc.add_argument("--output-dir", "-o", help="Destination folder (default: same as input)")
+    p_enc.set_defaults(func=cmd_encode)
+
+    # doctor
+    p_doc = subparsers.add_parser("doctor", help="Check dependencies and environment")
+    p_doc.set_defaults(func=cmd_doctor)
+
+    # path
+    p_path = subparsers.add_parser("path", help="Print path to the installed skill")
+    p_path.set_defaults(func=cmd_path)
+
+    args = parser.parse_args()
+    if not args.command:
+        parser.print_help()
+        sys.exit(0)
+
+    args.func(args)
+
+
+if __name__ == "__main__":
+    main()

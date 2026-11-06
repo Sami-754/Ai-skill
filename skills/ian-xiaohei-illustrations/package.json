@@ -1,0 +1,10 @@
+{
+  "name": "ian-xiaohei-illustrations-en",
+  "version": "0.1.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "validate:skill": "node scripts/validate-skill.mjs",
+    "test": "npm run validate:skill"
+  }
+}

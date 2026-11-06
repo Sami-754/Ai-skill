@@ -1,0 +1,16 @@
+# Dependencies and environments
+node_modules/
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+
+# Logs and runtime caches
+*.log
+.DS_Store
+.tavily/
+.firecrawl/
+dist/
+build/
+*.tmp

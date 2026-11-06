@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>awwwards skill — build websites to jury standard</title>
+<meta name="description" content="A Claude Code skill that encodes the Awwwards scoring system (Design 40% / Usability 30% / Creativity 20% / Content 10%) as an 8-phase build method, with 19 reference guides, a runnable browser audit and eleven demo sites built with it.">
+<meta name="theme-color" content="#0b0b0d">
+<link rel="canonical" href="https://sandrohub013.github.io/awwwards-skill/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sandrohub013.github.io/awwwards-skill/">
+<meta property="og:title" content="awwwards skill — build websites to jury standard">
+<meta property="og:description" content="The Awwwards rubric, encoded as a build method for AI coding agents. 19 references, working templates, runnable browser audit. MIT.">
+<meta property="og:image" content="https://sandrohub013.github.io/awwwards-skill/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230b0b0d'/><text x='16' y='23' font-size='20' font-family='monospace' text-anchor='middle' fill='%23d8f34a'>A</text></svg>">
+<link rel="stylesheet" href="./styles.css">
+<script type="module" src="./app.js"></script>
+</head>
+
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <a class="site-head__mark" href="#main"><span aria-hidden="true">◈</span> awwwards<span class="dim">.skill</span></a>
+  <nav class="site-head__nav" aria-label="Primary">
+    <a href="#demos">Demos</a>
+    <a href="#rubric">Rubric</a>
+    <a href="#score">Score</a>
+    <a href="#inside">Inside</a>
+    <a href="#install" class="cta">Install</a>
+  </nav>
+</header>
+
+<main id="main" tabindex="-1">
+
+  <!-- ── HERO ─────────────────────────────────────────────── -->
+  <section class="hero">
+    <p class="eyebrow">Claude Code skill · MIT</p>
+
+    <h1 class="hero__title">
+      Awwwards is not<br>a style. It&rsquo;s a<br><em>scoring system.</em>
+    </h1>
+
+    <p class="hero__lede">
+      Four weighted criteria, judged by at least eighteen working designers, with the
+      three most extreme scores thrown away. This skill encodes that system as a build
+      method your coding agent can actually follow.
+    </p>
+
+    <div class="hero__install">
+      <div class="snippet" data-copy-group>
+        <code id="snippet-hero">curl -fsSL https://raw.githubusercontent.com/SandroHub013/awwwards-skill/main/install.sh | sh</code>
+        <button type="button" class="copy" data-copy="#snippet-hero">
+          <span class="copy__label">Copy</span>
+        </button>
+      </div>
+      <p class="hero__alt">
+        Windows? <a href="#install">PowerShell one-liner</a> · Prefer no pipe-to-shell?
+        <a href="#install">git clone</a>
+      </p>
+    </div>
+
+    <ul class="hero__weights" aria-label="Scoring weights">
+      <li style="--w:40"><b>40<span>%</span></b><span>Design</span></li>
+      <li style="--w:30"><b>30<span>%</span></b><span>Usability</span></li>
+      <li style="--w:20"><b>20<span>%</span></b><span>Creativity</span></li>
+      <li style="--w:10"><b>10<span>%</span></b><span>Content</span></li>
+    </ul>
+  </section>
+
+  <!-- ── THE TWO CONSEQUENCES ─────────────────────────────── -->
+  <section class="pull">
+    <div class="pull__grid">
+      <article class="pull__item" data-reveal>
+        <p class="eyebrow">Consequence one</p>
+        <h2>You don&rsquo;t win because one juror falls in love.</h2>
+        <p>The outlier votes are dropped automatically. You win because
+           <em>no juror finds a reason to mark you down</em>. That makes usability,
+           the one criterion anyone can measure objectively, the thing that quietly
+           eliminates the most beautiful sites.</p>
+      </article>
+      <article class="pull__item" data-reveal>
+        <p class="eyebrow">Consequence two</p>
+        <h2>One signature moment beats twenty effects.</h2>
+        <p>Every recent Site of the Day has a single interaction people describe out
+           loud. Scattered effects read as noise and cost points twice: once in design,
+           once in usability.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ── DEMOS ────────────────────────────────────────────── -->
+  <section class="section" id="demos">
+    <header class="section__head" data-reveal>
+      <p class="eyebrow">Built with it</p>
+      <h2 class="section__title">Eleven sites, no stock anything</h2>
+      <p class="section__sub">Each was produced by running the method in this repo end to
+        end, and each is scored against the same rubric with the numbers published rather
+        than implied. Three are built on primary sources &mdash; a font binary, a public
+        earthquake catalog, and the 1931 measurements that define colour. One is generated
+        footage and says so in its headline rather than its footer. One derives its whole
+        geometry from the two setting-out rules a fifteenth-century site actually used. Two
+        are scroll-scrubbed films arguing with each other: one hides every cut, the other
+        prints them. One is the Via Appia walked sideways, with the milestones doing the
+        progress reporting. The rest have no assets at all: they compute every frame while
+        you watch.</p>
+    </header>
+
+    <ul class="demos">
+      <li class="demo" data-reveal>
+        <a class="demo__link" href="./demos/wonk/">
+          <figure class="demo__shot">
+            <img src="./media/demo-wonk.webp" width="960" height="540" loading="lazy"
+                 decoding="async"
+                 alt="The wonk demo: the word wonk set very large in red Fraunces on warm
+                      paper, with a WONK slider and a live readout of the four axis values.">
+          </figure>
+          <div class="demo__body">
+            <p class="demo__kicker">01 &middot; type specimen &middot; no WebGL</p>
+            <h3 class="demo__title">wonk</h3>
+            <p class="demo__line">Fraunces ships crooked &mdash; <code>WONK</code> has a
+              default of 1. Scroll resolves the argument: the column you are reading
+              travels from the shipped axes to the asked-for ones.</p>
+            <p class="demo__meta">
+              <span>Editorial</span><span>GSAP + Lenis</span><span>1 webfont, 121 KB</span>
+            </p>
+          </div>
+        </a>
+      </li>
+
+      <li class="demo" data-reveal>
+        <a class="demo__link" href="./demos/descent/">
+          <figure class="demo__shot">
+            <img src="./media/demo-descent.webp" width="960" height="540" loading="lazy"
+                 decoding="async"
+                 alt="The descent demo: thousands of amber and cyan points forming
+                      subduction zones descending into darkness, with a depth gauge
+                      reading in kilometres.">
+          </figure>
+          <div class="demo__body">
+            <p class="demo__kicker">02 &middot; data / WebGL &middot; no webfont</p>
+            <h3 class="demo__title">descent</h3>
+            <p class="demo__line">A quake map is the top face of a solid. 8,556 real
+              events of 2025 at their own depth, and scroll is the only way down through
+              the 670 km underneath.</p>
+            <p class="demo__meta">
+              <span>Retro-technical</span><span>Three.js</span><span>data 59,900 B</span>
+            </p>
+          </div>
+        </a>
+      </li>
+
+      <li class="demo" data-reveal>
+        <a class="demo__link" href="./demos/reel/">
+          <figure class="demo__shot">
+            <img src="./media/demo-reel.webp" width="960" height="540" loading="lazy"
+                 decoding="async"
+                 alt="The reel demo: a full-bleed frame of cold light falling through deep
+                      water, under the headline Nothing here was filmed.">
+          </figure>
+          <div class="demo__body">
+            <p class="demo__kicker">03 &middot; video-first &middot; generated footage</p>
+            <h3 class="demo__title">nothing here was filmed</h3>
+            <p class="demo__line">A reel whose footage came out of a model, and says so
+              in its headline. Three clips are one file where every frame is a keyframe,
+              at 1920&times;1080, so the scroll bar is the film&rsquo;s transport.</p>
+            <p class="demo__meta">
+              <span>Video-first</span><span>Scroll-driven</span><span>18s at 1080p, 1.57 MB</span>
+            </p>
+          </div>
+        </a>
+      </li>
+
+      <li class="demo" data-reveal>
+        <a class="demo__link" href="./demos/abyss/">
+          <figure class="demo__shot">
+            <img src="./media/demo-abyss.webp" width="960" height="540" loading="lazy"
+                 decoding="async"
+                 alt="The abyss demo: a rock wall lit by a single warm lamp in dark water,
+                      with marine snow drifting through the beam.">
+          </figure>
+          <div class="demo__body">
+            <p class="demo__kicker">04 &middot; real-time &middot; Three.js</p>
+            <h3 class="demo__title">abyss</h3>
+            <p class="demo__line">The dark is the default. Scroll descends and the pointer
+              aims the lamp &mdash; nothing is lit until you point at it, which is the one
+              thing a rendered film can never do.</p>
+            <p class="demo__meta">
+              <span>Spatial</span><span>4 draw calls</span><span>zero textures</span>
+            </p>
+          </div>
+        </a>
+      </li>
+
+      <li class="demo" data-reveal>
+        <a class="demo__link" href="./demos/sakura/">
+          <figure class="demo__shot">
+            <img src="./media/demo-sakura.webp" width="960" height="540" loading="lazy"
+                 decoding="async"
+                 alt="The ichi demo: an ink silhouette of a samurai drawing a sword under
+                      cherry trees, with petals falling across warm paper.">
+          </figure>
+          <div class="demo__body">
+            <p class="demo__kicker">05 &middot; real-time &middot; Three.js</p>
+            <h3 class="demo__title">ichi</h3>
+            <p class="demo__line">Iai is one motion at one speed, so the scroll bar
+              performs it. No model file: the figure is a bone hierarchy and the grove is
+              a recursion.</p>
+            <p class="demo__meta">
+              <span>Woodblock</span><span>242 triangles</span><span>zero assets</span>
+            </p>
+          </div>
+        </a>
+      </li>
+
+      <li class="demo" data-reveal>
+        <a class="demo__link" href="./demos/orbit/">
+          <figure class="demo__shot">
+            <img src="./media/demo-orbit.webp" width="960" height="540" loading="lazy"
+                 decoding="async"
+                 alt="The solar system lesson: Saturn with its rings against stars, beside
+                      a panel of facts in Italian for primary-school readers.">
+          </figure>
+          <div class="demo__body">
+            <p class="demo__kicker">06 &middot; lesson &middot; NASA JPL data</p>
+            <h3 class="demo__title">il sistema solare</h3>
+            <p class="demo__line">Every drawing of the solar system is wrong, and this one
+              says by how much. Eight planets with real JPL numbers, written for
+              eight-year-olds.</p>
+            <p class="demo__meta">
+              <span>Educational</span><span>12 draw calls</span><span>primary source</span>
+            </p>
+          </div>
+        </a>
+      </li>
+
+      <li class="demo" data-reveal>
+        <a class="demo__link" href="./demos/gamut/">
+          <figure class="demo__shot">
+            <img src="./media/demo-gamut.webp" width="960" height="540" loading="lazy"
+                 decoding="async"
+                 alt="The gamut demo: the CIE 1931 chromaticity diagram on pale paper with
+                      everything outside the sRGB triangle drained to flat grey, and a
+                      readout showing 33.5 per cent of the diagram.">
+          </figure>
+          <div class="demo__body">
+            <p class="demo__kicker">07 &middot; colour &middot; no libraries</p>
+            <h3 class="demo__title">gamut</h3>
+            <p class="demo__line">Scroll, and every colour your display cannot emit drains
+              to grey. The counter is the clipped area of the locus, not a caption &mdash;
+              it lands on 33.5% because that is what the polygon says.</p>
+            <p class="demo__meta">
+              <span>Instrument</span><span>31 KB, 6 requests</span><span>CIE 1931 data</span>
+            </p>
+          </div>
+        </a>
+      </li>
+      <li class="demo" data-reveal>
+        <a class="demo__link" href="./demos/cupola/">
+          <figure class="demo__shot">
+            <img src="./media/demo-cupola.webp" width="960" height="540" loading="lazy"
+                 decoding="async"
+                 alt="The cupola demo: Brunelleschi's dome in terracotta with white marble
+                      ribs and its lantern, standing over the roofs of Florence beside
+                      Giotto's campanile.">
+          </figure>
+          <div class="demo__body">
+            <p class="demo__kicker">08 &middot; architecture &middot; Three.js</p>
+            <h3 class="demo__title">cupola</h3>
+            <p class="demo__line">Nobody knew how to close a hole 45.5&nbsp;m wide, so scroll
+              lays the courses that did &mdash; the profile from the <i>quinto acuto</i> rule,
+              the beds on cones rather than level, the herringbone computed per pixel.</p>
+            <p class="demo__meta">
+              <span>Architectural</span><span>5 draw calls</span><span>zero assets</span>
+            </p>
+          </div>
+        </a>
+      </li>
+
+      <li class="demo" data-reveal>
+        <a class="demo__link" href="./demos/soglia/">
+          <figure class="demo__shot">
+            <img src="./media/demo-soglia.webp" width="960" height="540" loading="lazy"
+                 decoding="async"
+                 alt="The soglia demo: a half-made chair on a workbench inside a dark
+                      workshop, seen through the doorway, dust drifting in the light.">
+          </figure>
+          <div class="demo__body">
+            <p class="demo__kicker">09 &middot; scroll-scrub &middot; zero footage</p>
+            <h3 class="demo__title">soglia</h3>
+            <p class="demo__line">One take through a hill town at dawn &mdash; and the take
+              is a lie told honestly: seven clips cut at three doorways, the seam frame
+              shipped in both neighbours. Nothing filmed, nothing generated.</p>
+            <p class="demo__meta">
+              <span>Camera flight</span><span>7 clips, 1 path</span><span>seed 1410</span>
+            </p>
+          </div>
+        </a>
+      </li>
+
+      <li class="demo" data-reveal>
+        <a class="demo__link" href="./demos/stacco/">
+          <figure class="demo__shot">
+            <img src="./media/demo-stacco.webp" width="960" height="540" loading="lazy"
+                 decoding="async"
+                 alt="The stacco demo: a cottage at first light in a foggy wood with a small
+                      red-cloaked figure on the path, the word stacco set large over the
+                      lower left, and a slate reading SHOT 01/09, 28 MM, LOCK + PUSH.">
+          </figure>
+          <div class="demo__body">
+            <p class="demo__kicker">10 &middot; cut film &middot; zero footage</p>
+            <h3 class="demo__title">stacco</h3>
+            <p class="demo__line">Cappuccetto Rosso in nine shots. Soglia was one take that
+              hid its seams; this is an edit that declares them &mdash; nine lenses from 18
+              to 85&thinsp;mm, and the lens and the move printed under every frame.</p>
+            <p class="demo__meta">
+              <span>Cut film</span><span>9 shots, 9 clips</span><span>seed 1697</span>
+            </p>
+          </div>
+        </a>
+      </li>
+
+      <li class="demo" data-reveal>
+        <a class="demo__link" href="./demos/miliario/">
+          <figure class="demo__shot">
+            <img src="./media/demo-miliario.webp" width="960" height="540" loading="lazy"
+                 decoding="async"
+                 alt="The miliario demo: REGINA VIARUM set in lapidary caps on warm paper
+                      above a band of basalt paving slabs, with a stone milestone and a
+                      route line drawing itself across the top.">
+          </figure>
+          <div class="demo__body">
+            <p class="demo__kicker">11 &middot; horizontal journey &middot; no libraries</p>
+            <h3 class="demo__title">miliario</h3>
+            <p class="demo__line">The Via Appia walked sideways: scroll lays the road under
+              your feet one-to-one, parallax layers slide past at Roman rates, and progress
+              is read on stone milestones &mdash; MP CCCLXXXI, never a percentage.</p>
+            <p class="demo__meta">
+              <span>Editorial-organic</span><span>canvas + SVG, 1 rAF</span><span>seed 312</span>
+            </p>
+          </div>
+        </a>
+      </li>
+    </ul>
+
+    <p class="note" data-reveal>
+      None is a template. Each one is self-scored against
+      <a href="https://github.com/SandroHub013/awwwards-skill/blob/main/references/01-scoring.md">the
+      same rubric</a> the skill applies to your work, and the score is printed in each
+      repo folder rather than implied.
+    </p>
+  </section>
+
+  <!-- ── RUBRIC ───────────────────────────────────────────── -->
+  <section class="section" id="rubric">
+    <header class="section__head" data-reveal>
+      <p class="eyebrow">The rubric</p>
+      <h2 class="section__title">What each criterion actually rewards</h2>
+    </header>
+
+    <ul class="rubric">
+      <li class="rubric__row" data-reveal style="--w:40">
+        <span class="rubric__weight"><b>40</b><i>%</i></span>
+        <div class="rubric__body">
+          <h3>Design</h3>
+          <p><b>Rewards</b> visual hierarchy, a real type system, colour with intent,
+             consistent spacing, states that were designed rather than defaulted, and the
+             same language on inner pages.</p>
+          <p><b>Punishes</b> stock photography, default component-library look, three
+             greys and five shadows, a polished homepage attached to an unstyled inner page.</p>
+        </div>
+        <span class="rubric__bar" aria-hidden="true"><i></i></span>
+      </li>
+      <li class="rubric__row" data-reveal style="--w:30">
+        <span class="rubric__weight"><b>30</b><i>%</i></span>
+        <div class="rubric__body">
+          <h3>Usability</h3>
+          <p><b>Rewards</b> obvious navigation, fast first paint, 60&thinsp;fps interaction,
+             breakpoints that were designed, accessible contrast, focus and reduced motion.</p>
+          <p><b>Punishes</b> five-second loads, scroll-jacking, hover-only affordances on
+             touch, layout shift, anything that needs a tutorial.</p>
+        </div>
+        <span class="rubric__bar" aria-hidden="true"><i></i></span>
+      </li>
+      <li class="rubric__row" data-reveal style="--w:20">
+        <span class="rubric__weight"><b>20</b><i>%</i></span>
+        <div class="rubric__body">
+          <h3>Creativity</h3>
+          <p><b>Rewards</b> an idea. Concept-driven design where the interaction expresses
+             the subject, and craft turning up somewhere unexpected.</p>
+          <p><b>Punishes</b> novelty without meaning, effects copied from last month&rsquo;s
+             winner, risk that degrades the experience.</p>
+        </div>
+        <span class="rubric__bar" aria-hidden="true"><i></i></span>
+      </li>
+      <li class="rubric__row" data-reveal style="--w:10">
+        <span class="rubric__weight"><b>10</b><i>%</i></span>
+        <div class="rubric__body">
+          <h3>Content</h3>
+          <p><b>Rewards</b> real copy with a voice, original imagery, content and design
+             authored together, microcopy nobody was supposed to notice.</p>
+          <p><b>Punishes</b> lorem ipsum, stock, placeholder names, three identical
+             fake case studies.</p>
+        </div>
+        <span class="rubric__bar" aria-hidden="true"><i></i></span>
+      </li>
+    </ul>
+
+    <p class="thresholds" data-reveal>
+      <span><b>≥ 6.5</b> Honorable Mention <i>(jury and users, independently)</i></span>
+      <span><b>highest</b> Site of the Day</span>
+      <span><b>&gt; 7</b> Developer Award <i>(SOTD winners, re-scored by a developer jury)</i></span>
+    </p>
+  </section>
+
+  <!-- ── SIGNATURE MOMENT: score calculator ───────────────── -->
+  <section class="section score" id="score">
+    <header class="section__head" data-reveal>
+      <p class="eyebrow">Try the rubric</p>
+      <h2 class="section__title">Score your own site, honestly</h2>
+      <p class="section__lede">The same weighted maths the jury applies. Be pessimistic:
+         a juror spends sixty to a hundred and twenty seconds on your site, on their
+         machine, at their window size, on their connection.</p>
+    </header>
+
+    <div class="calc">
+      <form class="calc__controls" id="calc">
+        <div class="field">
+          <label for="c-design">Design <i>×0.40</i></label>
+          <input type="range" id="c-design" name="design" min="0" max="10" step="0.1" value="7">
+          <output for="c-design" data-out="design">7.0</output>
+        </div>
+        <div class="field">
+          <label for="c-usability">Usability <i>×0.30</i></label>
+          <input type="range" id="c-usability" name="usability" min="0" max="10" step="0.1" value="6">
+          <output for="c-usability" data-out="usability">6.0</output>
+        </div>
+        <div class="field">
+          <label for="c-creativity">Creativity <i>×0.20</i></label>
+          <input type="range" id="c-creativity" name="creativity" min="0" max="10" step="0.1" value="7">
+          <output for="c-creativity" data-out="creativity">7.0</output>
+        </div>
+        <div class="field">
+          <label for="c-content">Content <i>×0.10</i></label>
+          <input type="range" id="c-content" name="content" min="0" max="10" step="0.1" value="6">
+          <output for="c-content" data-out="content">6.0</output>
+        </div>
+      </form>
+
+      <div class="calc__result">
+        <div class="dial" data-dial style="--v:0.66">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="dial__track" cx="60" cy="60" r="52"/>
+            <circle class="dial__value" cx="60" cy="60" r="52"/>
+          </svg>
+          <p class="dial__num"><b data-total>6.60</b><i>/10</i></p>
+        </div>
+        <p class="verdict" data-verdict role="status" aria-live="polite">
+          <b>Close to an Honorable Mention.</b>
+          Find your two lowest rows and fix those first.
+        </p>
+        <ul class="tiers" aria-hidden="true">
+          <li data-tier="0">&lt; 6.0: not submittable</li>
+          <li data-tier="1">6.0–6.4: nearly there</li>
+          <li data-tier="2">6.5–6.9: Honorable Mention</li>
+          <li data-tier="3">7.0–7.5: SOTD contender</li>
+          <li data-tier="4">&gt; 7.5: strong SOTD / SOTM</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── WORKFLOW ─────────────────────────────────────────── -->
+  <section class="section" id="workflow">
+    <header class="section__head" data-reveal>
+      <p class="eyebrow">The method</p>
+      <h2 class="section__title">Eight phases, in order, no skipping</h2>
+      <p class="section__lede">The agent does not start writing markup at phase three
+         without phases zero to two written down. That single rule is most of the
+         difference between a competent site and an awarded one.</p>
+    </header>
+
+    <ol class="phases">
+      <li data-reveal><b>Brief &amp; concept</b><span>One sentence that survives with every animation removed.</span></li>
+      <li data-reveal><b>Art direction system</b><span>Type scale, colour roles, grid, spacing rhythm, motion language, as tokens, before markup.</span></li>
+      <li data-reveal><b>Signature moment</b><span>Specified in writing: trigger, phases, timing, mobile version, reduced-motion version, fallback.</span></li>
+      <li data-reveal><b>Build</b><span>Smallest stack that expresses the concept. Scroll spine first, then sections.</span></li>
+      <li data-reveal><b>Craft pass</b><span>Preloader, transitions, cursor, states, 404, OG image. Where 6.5 becomes 7.5.</span></li>
+      <li data-reveal><b>Hardening</b><span>Performance budget, Core Web Vitals, accessibility, mobile excellence, cross-browser.</span></li>
+      <li data-reveal><b>Self-score &amp; audit</b><span>Measured in a real browser. Iterate until the predicted score clears 7.0.</span></li>
+      <li data-reveal><b>Submission</b><span>Thumbnail, timing, deploy freeze, share plan.</span></li>
+    </ol>
+  </section>
+
+  <!-- ── NON-NEGOTIABLES + PROOF ──────────────────────────── -->
+  <section class="section" id="proof">
+    <header class="section__head" data-reveal>
+      <p class="eyebrow">Non-negotiables</p>
+      <h2 class="section__title">Numbers, not adjectives</h2>
+      <p class="section__lede">The skill treats these as build constraints, not as a
+         post-launch cleanup. The right-hand column is this page, measured, because a
+         document about craft that loads slowly is an argument against itself.</p>
+    </header>
+
+    <div class="table-wrap" data-reveal>
+      <table class="proof">
+        <caption class="sr-only">Award-tier performance targets compared with this page's measured values</caption>
+        <thead>
+          <tr><th scope="col">Metric</th><th scope="col">Award target</th><th scope="col">Typical site</th><th scope="col">This page</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">LCP</th><td>&lt; 1.5&thinsp;s</td><td>2.5–4&thinsp;s</td><td data-measured="lcp">measuring&hellip;</td></tr>
+          <tr><th scope="row">CLS</th><td>&lt; 0.05</td><td>0.1–0.25</td><td data-measured="cls">measuring&hellip;</td></tr>
+          <tr><th scope="row">INP</th><td>&lt; 100&thinsp;ms</td><td>200–500&thinsp;ms</td><td data-measured="inp">measuring&hellip;</td></tr>
+          <tr><th scope="row">First-view payload <i>as served</i></th><td>&lt; 3&thinsp;MB</td><td>5–10&thinsp;MB</td><td data-measured="weight">measuring&hellip;</td></tr>
+          <tr><th scope="row">JavaScript shipped <i>as served</i></th><td>&lt; 250&thinsp;KB</td><td>1&thinsp;MB+</td><td data-measured="js">measuring&hellip;</td></tr>
+          <tr><th scope="row">Animation libraries</th><td>as few as express the concept</td><td>two or three</td><td data-measured="libs">zero</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="note" data-reveal>
+      This page ships no animation library on purpose. Reference&nbsp;06 says to pick the
+      smallest stack that can express the concept, and a documentation page is not a
+      spatial experience, so the reveals here are native CSS scroll-driven animations
+      and the rest is a few kilobytes of vanilla JavaScript. The skill recommends
+      GSAP&nbsp;+&nbsp;Lenis where the concept earns them, and ships a working template
+      for exactly that.
+    </p>
+  </section>
+
+  <!-- ── WHAT'S INSIDE ────────────────────────────────────── -->
+  <section class="section" id="inside">
+    <header class="section__head" data-reveal>
+      <p class="eyebrow">What&rsquo;s inside</p>
+      <h2 class="section__title">Nineteen references, loaded on demand</h2>
+      <p class="section__lede">Progressive disclosure: the agent reads the workflow, then
+         pulls only the reference the current phase needs.</p>
+    </header>
+
+    <ul class="refs">
+      <li data-reveal><a href="https://github.com/SandroHub013/awwwards-skill/blob/main/references/01-scoring.md"><b>Scoring</b><code>01-scoring.md</code><span>Rubric decoded, thresholds, self-scoring sheet</span></a></li>
+      <li data-reveal><a href="https://github.com/SandroHub013/awwwards-skill/blob/main/references/02-concept.md"><b>Concept</b><code>02-concept.md</code><span>Concept statement, seven art-direction registers, narrative spines</span></a></li>
+      <li data-reveal><a href="https://github.com/SandroHub013/awwwards-skill/blob/main/references/03-typography.md"><b>Typography</b><code>03-typography.md</code><span>Fluid scale, variable fonts, zero-CLS loading, kinetic type</span></a></li>
+      <li data-reveal><a href="https://github.com/SandroHub013/awwwards-skill/blob/main/references/04-color-and-layout.md"><b>Colour &amp; layout</b><code>04-color-and-layout.md</code><span>OKLCH roles, contrast, grid, spacing rhythm, composition</span></a></li>
+      <li data-reveal><a href="https://github.com/SandroHub013/awwwards-skill/blob/main/references/05-motion.md"><b>Motion</b><code>05-motion.md</code><span>Easing language, choreography, the signature moment</span></a></li>
+      <li data-reveal><a href="https://github.com/SandroHub013/awwwards-skill/blob/main/references/06-stack.md"><b>Stack</b><code>06-stack.md</code><span>Decision matrix, current versions, project structure</span></a></li>
+      <li data-reveal><a href="https://github.com/SandroHub013/awwwards-skill/blob/main/references/07-scroll.md"><b>Scroll</b><code>07-scroll.md</code><span>Lenis + ScrollTrigger, native scroll-driven CSS, pinning, horizontal</span></a></li>
+      <li data-reveal><a href="https://github.com/SandroHub013/awwwards-skill/blob/main/references/08-webgl.md"><b>WebGL</b><code>08-webgl.md</code><span>Three.js patterns, DOM sync, shaders, GPU budgets, disposal</span></a></li>
+      <li data-reveal><a href="https://github.com/SandroHub013/awwwards-skill/blob/main/references/09-transitions.md"><b>Transitions</b><code>09-transitions.md</code><span>Preloaders, page transitions, View Transitions API</span></a></li>
+      <li data-reveal><a href="https://github.com/SandroHub013/awwwards-skill/blob/main/references/10-interactions.md"><b>Interactions</b><code>10-interactions.md</code><span>Cursor, magnetic, hover, sound, micro-detail checklist</span></a></li>
+      <li data-reveal><a href="https://github.com/SandroHub013/awwwards-skill/blob/main/references/11-performance.md"><b>Performance</b><code>11-performance.md</code><span>Budgets, Core Web Vitals, asset pipeline, frame budget</span></a></li>
+      <li data-reveal><a href="https://github.com/SandroHub013/awwwards-skill/blob/main/references/12-accessibility.md"><b>Accessibility</b><code>12-accessibility.md</code><span>WCAG 2.2 AA for motion-heavy sites, Developer Award</span></a></li>
+      <li data-reveal><a href="https://github.com/SandroHub013/awwwards-skill/blob/main/references/13-responsive.md"><b>Responsive</b><code>13-responsive.md</code><span>Mobile Excellence, touch, breakpoint discipline</span></a></li>
+      <li data-reveal><a href="https://github.com/SandroHub013/awwwards-skill/blob/main/references/14-anti-patterns.md"><b>Anti-patterns</b><code>14-anti-patterns.md</code><span>Score killers, ordered by how fast a juror notices</span></a></li>
+      <li data-reveal><a href="https://github.com/SandroHub013/awwwards-skill/blob/main/references/15-audit.md"><b>Audit</b><code>15-audit.md</code><span>Runnable real-browser verification, not guessed numbers</span></a></li>
+      <li data-reveal><a href="https://github.com/SandroHub013/awwwards-skill/blob/main/references/16-submission.md"><b>Submission</b><code>16-submission.md</code><span>Timing, thumbnail, deploy freeze, other awards</span></a></li>
+      <li data-reveal><a href="https://github.com/SandroHub013/awwwards-skill/blob/main/references/17-video.md"><b>Video</b><code>17-video.md</code><span>Encoding ladder, HLS, preview patterns, accessible custom player</span></a></li>
+      <li data-reveal><a href="https://github.com/SandroHub013/awwwards-skill/blob/main/references/18-deepdive.md"><b>Deep dive</b><code>18-deepdive.md</code><span>Turn an awarded site into a reusable idea card: evidence, not assertion</span></a></li>
+      <li data-reveal><a href="https://github.com/SandroHub013/awwwards-skill/blob/main/references/19-scroll-scrub.md"><b>Scroll-scrub</b><code>19-scroll-scrub.md</code><span>Camera flight as the site: frame-lock seams, blob seeks, playback autoplay</span></a></li>
+    </ul>
+
+    <div class="extras" data-reveal>
+      <p><b>Plus</b> a no-build starter template that encodes the doctrine, a DOM-synced
+         WebGL layer with real teardown, and a printable pre-flight checklist.</p>
+    </div>
+  </section>
+
+  <!-- ── INSTALL ──────────────────────────────────────────── -->
+  <section class="section install" id="install">
+    <header class="section__head" data-reveal>
+      <p class="eyebrow">Install</p>
+      <h2 class="section__title">Four ways, thirty seconds</h2>
+    </header>
+
+    <div class="tabs" data-tabs data-reveal>
+      <div class="tabs__list" role="tablist" aria-label="Installation method">
+        <button role="tab" id="tab-sh" aria-controls="panel-sh" aria-selected="true">macOS / Linux</button>
+        <button role="tab" id="tab-ps" aria-controls="panel-ps" aria-selected="false" tabindex="-1">Windows</button>
+        <button role="tab" id="tab-git" aria-controls="panel-git" aria-selected="false" tabindex="-1">git clone</button>
+        <button role="tab" id="tab-plugin" aria-controls="panel-plugin" aria-selected="false" tabindex="-1">Plugin</button>
+      </div>
+
+      <div class="tabs__panel" role="tabpanel" id="panel-sh" aria-labelledby="tab-sh" tabindex="0">
+        <div class="snippet">
+          <code id="s-sh">curl -fsSL https://raw.githubusercontent.com/SandroHub013/awwwards-skill/main/install.sh | sh</code>
+          <button type="button" class="copy" data-copy="#s-sh"><span class="copy__label">Copy</span></button>
+        </div>
+        <p class="snippet__note">Clones into <code>~/.claude/skills/awwwards</code>. Re-run to update.</p>
+      </div>
+
+      <div class="tabs__panel" role="tabpanel" id="panel-ps" aria-labelledby="tab-ps" tabindex="0" hidden>
+        <div class="snippet">
+          <code id="s-ps">irm https://raw.githubusercontent.com/SandroHub013/awwwards-skill/main/install.ps1 | iex</code>
+          <button type="button" class="copy" data-copy="#s-ps"><span class="copy__label">Copy</span></button>
+        </div>
+        <p class="snippet__note">PowerShell. Same destination, same update behaviour.</p>
+      </div>
+
+      <div class="tabs__panel" role="tabpanel" id="panel-git" aria-labelledby="tab-git" tabindex="0" hidden>
+        <div class="snippet">
+          <code id="s-git">git clone https://github.com/SandroHub013/awwwards-skill.git ~/.claude/skills/awwwards</code>
+          <button type="button" class="copy" data-copy="#s-git"><span class="copy__label">Copy</span></button>
+        </div>
+        <p class="snippet__note">No pipe to shell. Read every line first. You should.</p>
+      </div>
+
+      <div class="tabs__panel" role="tabpanel" id="panel-plugin" aria-labelledby="tab-plugin" tabindex="0" hidden>
+        <div class="snippet">
+          <code id="s-plugin">/plugin marketplace add SandroHub013/awwwards-skill</code>
+          <button type="button" class="copy" data-copy="#s-plugin"><span class="copy__label">Copy</span></button>
+        </div>
+        <div class="snippet">
+          <code id="s-plugin2">/plugin install awwwards@awwwards-skill</code>
+          <button type="button" class="copy" data-copy="#s-plugin2"><span class="copy__label">Copy</span></button>
+        </div>
+        <p class="snippet__note">Inside Claude Code. Versioned, updatable with <code>/plugin marketplace update</code>.</p>
+      </div>
+    </div>
+
+    <div class="usage" data-reveal>
+      <p class="eyebrow">Then say</p>
+      <ul>
+        <li><code>/awwwards</code> to read the workflow</li>
+        <li>&ldquo;build me an awwwards-level site for my studio&rdquo;</li>
+        <li>&ldquo;score my site against the Awwwards criteria&rdquo;, which drives a real browser and reports measured numbers</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="closer">
+    <p class="closer__text" data-reveal>
+      Polish does not rescue a site with no idea.<br>
+      <span>Start at phase zero.</span>
+    </p>
+    <div class="closer__actions" data-reveal>
+      <a class="button button--solid" href="https://github.com/SandroHub013/awwwards-skill">Star on GitHub</a>
+      <a class="button" href="https://github.com/SandroHub013/awwwards-skill/blob/main/SKILL.md">Read SKILL.md</a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <p>MIT licensed. Built by <a href="https://github.com/SandroHub013">Alessandro Boni</a>.</p>
+  <p class="dim">Independent and unofficial. Not affiliated with Awwwards.</p>
+</footer>
+</body>
+</html>

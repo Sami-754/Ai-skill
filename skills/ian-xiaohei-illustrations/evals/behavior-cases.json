@@ -1,0 +1,175 @@
+{
+  "version": 1,
+  "description": "Static behavior fixtures for the Ian Xiaohei skill contract. These are runner-readable expectations for future forward tests and validator checks.",
+  "cases": [
+    {
+      "id": "plan-only-shot-list",
+      "request": "Use $ian-xiaohei-illustrations and do not generate images yet. Please analyze this English article and output a shot list of about 5 images.",
+      "expected_mode": "plan_only",
+      "expected_image_gen_calls": 0,
+      "expected_references": [
+        "references/composition-patterns.md"
+      ],
+      "required_output_fields": [
+        "placement",
+        "topic",
+        "core meaning",
+        "structure type",
+        "Xiaohei action",
+        "elements",
+        "English labels"
+      ],
+      "source_must_include": [
+        {
+          "path": "ian-xiaohei-illustrations/SKILL.md",
+          "text": "In `plan_only` mode, output only the shot list and do not call `image_gen`."
+        }
+      ]
+    },
+    {
+      "id": "generate-explicit-count",
+      "request": "Use $ian-xiaohei-illustrations and generate 4 Xiaohei body illustrations for this English article.",
+      "expected_mode": "generate",
+      "expected_image_count": 4,
+      "expected_references": [
+        "references/style-dna.md",
+        "references/xiaohei-ip.md",
+        "references/composition-patterns.md",
+        "references/prompt-template.md",
+        "references/qa-checklist.md"
+      ],
+      "required_output_fields": [
+        "compact spec table",
+        "one image_gen call per image",
+        "QA manifest",
+        "absolute saved paths"
+      ],
+      "source_must_include": [
+        {
+          "path": "ian-xiaohei-illustrations/SKILL.md",
+          "text": "use the built-in `image_gen` once per image"
+        },
+        {
+          "path": "ian-xiaohei-illustrations/references/prompt-template.md",
+          "text": "Generate each image separately. Replace variables based on the article; do not combine multiple images into one."
+        }
+      ]
+    },
+    {
+      "id": "generate-default-count",
+      "request": "Use $ian-xiaohei-illustrations to design and generate a few weird, clean Xiaohei illustrations for this English article.",
+      "expected_mode": "generate",
+      "expected_image_count": 3,
+      "expected_references": [
+        "references/style-dna.md",
+        "references/xiaohei-ip.md",
+        "references/composition-patterns.md",
+        "references/prompt-template.md",
+        "references/qa-checklist.md"
+      ],
+      "required_output_fields": [
+        "three image specs",
+        "three image_gen calls",
+        "QA manifest"
+      ],
+      "source_must_include": [
+        {
+          "path": "ian-xiaohei-illustrations/SKILL.md",
+          "text": "If the user does not give an image count, generate 3 images by default."
+        }
+      ]
+    },
+    {
+      "id": "edit-remove-title",
+      "request": "Use $ian-xiaohei-illustrations to edit this image. Remove the top-left title \"Workflow\" and its underline. Keep everything else unchanged.",
+      "expected_mode": "edit",
+      "expected_references": [
+        "references/prompt-template.md",
+        "references/qa-checklist.md"
+      ],
+      "required_output_fields": [
+        "target text removed",
+        "composition preserved",
+        "QA manifest"
+      ],
+      "source_must_include": [
+        {
+          "path": "ian-xiaohei-illustrations/SKILL.md",
+          "text": "preserve the existing composition unless the user explicitly asks for a redesign"
+        },
+        {
+          "path": "ian-xiaohei-illustrations/references/prompt-template.md",
+          "text": "Remove only the handwritten title"
+        }
+      ]
+    },
+    {
+      "id": "save-collision-safe-handoff",
+      "request": "Use $ian-xiaohei-illustrations to save these generated images into the workspace and avoid overwriting existing files.",
+      "expected_mode": "save",
+      "expected_save_root": "<workspace-root>/assets/<article-slug>-illustrations/",
+      "expected_references": [
+        "references/qa-checklist.md"
+      ],
+      "required_output_fields": [
+        "slugged sequential filenames",
+        "collision suffix",
+        "absolute filesystem paths"
+      ],
+      "source_must_include": [
+        {
+          "path": "ian-xiaohei-illustrations/SKILL.md",
+          "text": "<workspace-root>/assets/<article-slug>-illustrations/"
+        },
+        {
+          "path": "ian-xiaohei-illustrations/SKILL.md",
+          "text": "append `-v2`, `-v3`, and so on"
+        }
+      ]
+    },
+    {
+      "id": "generic-art-out-of-scope",
+      "request": "Make me a polished commercial brand illustration for a landing page.",
+      "expected_mode": "out_of_scope",
+      "expected_references": [],
+      "required_output_fields": [
+        "do not force Xiaohei style"
+      ],
+      "source_must_include": [
+        {
+          "path": "ian-xiaohei-illustrations/SKILL.md",
+          "text": "Do not use for generic illustration"
+        }
+      ]
+    },
+    {
+      "id": "qa-manifest-handoff",
+      "request": "Use $ian-xiaohei-illustrations to generate one image and report what passed QA.",
+      "expected_mode": "generate",
+      "expected_image_count": 1,
+      "expected_references": [
+        "references/qa-checklist.md",
+        "references/prompt-template.md"
+      ],
+      "required_output_fields": [
+        "aspect ratio",
+        "white background",
+        "Xiaohei core action",
+        "labels",
+        "no title",
+        "no old-case reuse",
+        "saved path"
+      ],
+      "source_must_include": [
+        {
+          "path": "ian-xiaohei-illustrations/references/qa-checklist.md",
+          "text": "## QA Manifest"
+        },
+        {
+          "path": "ian-xiaohei-illustrations/references/prompt-template.md",
+          "text": "| image | aspect ratio | white background | Xiaohei core action | labels | no title | no old-case reuse | saved path |"
+        }
+      ]
+    }
+  ]
+}

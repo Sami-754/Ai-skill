@@ -1,0 +1,15 @@
+[Unit]
+Description=Turn off all RGB lighting at boot
+After=multi-user.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStartPre=/usr/bin/modprobe i2c-dev
+ExecStartPre=/usr/bin/sleep 2
+ExecStart=/home/sami/.agents/skills/openrgb/scripts/openrgb-off-boot.sh
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
