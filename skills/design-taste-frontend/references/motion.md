@@ -1,292 +1,159 @@
 # Motion
 
-Read this before adding any animation. The static page must already be finished and passing
-`inspect.mjs`; motion is the last pass, never a way to rescue a weak layout.
+Every page loads the micro-interaction layer: `<html data-motion>`, `assets/motion/motion.css`
+after `ui/cards.css`, `assets/motion/motion.js` (module) after `system.js` (`starter.html` has all
+three). **It is not optional:** never remove, skip or override it; if a check complains about it,
+fix the markup, not the layer. A missing or invisible hover layer is a fault on every kind (round
+C: a fintech, a cafe and a guesthouse page lost motion points because a hovered card or button
+showed no change); a still page is not. Give it markup to act on: a linked card is a `.card`
+holding its link (never `.m-nolift`), a photograph that leads somewhere is `<a class="m-zoom">`
+round its `<img>` (or `img.frame__img` inside a linked frame), buttons are `.btn`, links in
+running text `.link`. Shoot a hovered card and a hovered photograph at 1440 and see
+them change: the card 2px up, the photograph at 1.03. `assets/motion/demo.html` shows every interaction. This file
+holds every hover, press, loop and reduced-motion number; other files point here.
 
-## Contents
+What may move, by kind (house rules 5 and 8):
+- **Every kind:** the hover and focus layer below, and swaps a click or a tap makes (a tab on
+  software, a peek-list's photograph). Every change is the visitor's.
+- **Tech:** also loops inside a card's visual (diagram pulses included), one timed loop in the hero
+  or the `[data-visual]` frame, one count, and the effect, moments and scene `effects-usage.md`
+  deals.
+- **Other (product, service, place):** the hover layer alone. Nothing moves by itself, on load, by
+  time or on scroll: no entrance, ticker, marquee, slideshow, looping picture, pulsing dot, count or
+  moment. An open-now line may be filled once at load; the panel reads right without it. A
+  product render is a still by default; live only when asked (`data-product-mode="live"`), at
+  most one live context, with its pause button in the corner, a still on a phone and under reduced
+  motion (`effects-objects.md`).
 
-1. The budget
-2. Four questions before any animation
-3. Tokens
-4. Recipes (copy, then adapt)
-5. Signature moves
-6. Reduced motion and performance
-7. What gives generated motion away
+## Tokens
 
-## 1. The budget
+`--m-in` 140ms (hover in), `--m-out` 200ms, `--m-press` 90ms, `--m-panel` 200ms, `--m-slide`
+240ms (an indicator travelling), `--m-image` 600ms, `--m-cycle` 3.2s; tech loop tokens:
+`--m-roll` 700ms, `--m-count` 1000ms, `--m-level` .6s, `--m-bob` 3.2s. Ease `--m-ease`
+cubic-bezier(.2,.8,.2,1) for every UI step; `--m-ease-io` cubic-bezier(.65,0,.35,1) only for
+travel; cubic-bezier(.22,1,.36,1) only for digit rolls; linear for loops and drifts. No bounce or
+overshoot. Distances: card lift 2px, photo zoom 1.02 to 1.03, arrow 3px, menu drop 6px, button step 1px
+up (2px on `.btn--xl`; none on the text-link secondary of the `arrow` and `block` looks), press 1px
+down and scale .985 (that secondary: scale only); no others (`assets/motion/motion.css`, buttons).
 
-A page that does not move reads as a mock-up; the inspector counts what moves while the page loads and
-scrolls, and fails it under eight elements. The motion layer has four parts:
+## The hover layer
 
-- **One signature moment:** the thing a visitor would describe an hour later: the headline that rises
-  out of a mask, the image that opens like a shutter, the wordmark that scales with the scroll. The
-  direction sheet from `draw.mjs` names one. Build that one well; it is the only move allowed to be
-  loud.
-- **Section entrances, choreographed per section:** the parts of each section arrive in reading order
-  (heading, text, picture, details), staggered 60–90ms, rising 16–32px with opacity, once. Vary the
-  manner with the content instead of stamping one preset everywhere: a list arrives row by row, a
-  picture opens from a mask or settles from a slight scale, a figure counts up once, a statement rises
-  line by line.
-- **Feedback under the hand:** buttons that give on press, links that answer the pointer, cards and
-  pictures that respond on hover, a menu that opens from where it was clicked.
-- **One moving picture:** a found clip as a muted loop with a poster frame, a slow drift or scale on
-  a large photograph, or a scroll-linked move on the hero picture.
+Hover only for a fine pointer; every hover control also works by tap and keyboard and has a focus
+state; nothing resizes or pushes a neighbour; no rotate, skew, glow, shine sweep or chip glide.
 
-What is still banned: the same fade-and-slide-up with the same timing on every block, which is the most
-cited motion tell of generated pages; motion that hides content until a script runs, with no fallback;
-bounce and elastic easing; anything that animates layout properties. Uniform motion says nobody decided
-anything; choreographed motion with one protected moment says somebody did.
+| Part | Motion | Time |
+|---|---|---|
+| Button | on hover the fill steps 14% toward the ink (an outline gains a faint fill and a stronger border) and the box steps up 1px (2px on `.btn--xl`); press sinks it to 1px below rest and scales .985, so a hover shot and a press shot each show a move; the text-link secondary of the `arrow` and `block` button looks keeps its underline and does not step (its press scales .985 only); fine pointer only; page CSS never sets a `.btn`'s `transform` or `transition` | 140ms in, 200ms out, 90ms press |
+| Arrow | `svg.m-arrow` moves 3px right and settles back; one arrow style a page | 140 / 200ms |
+| Link | one underline style at regular weight: running text and `.link` rest on a faint 1px hairline and an ink line draws left to right, leaving to the right; nav and footer words rest bare, darken and draw a 1px line 4px under the word | 140 / 200ms |
+| Nav | the words take the drawn underline (no gliding pill on any kind); the panel opens after 150ms of intent, fades in with a 6px drop, its columns together, closes in 120ms; with one open the next word swaps it at once; the chevron turns 180 degrees on tech, flips at once on other | 200ms, 120ms |
+| Current page | a 2px bar under its nav word (`aria-current="page"`) | still |
+| Tabs (software, click only) | one indicator slides to the clicked tab: the ink pill `system.css` draws, its label in the ground colour; the panel swaps (200ms at most); every panel one fixed height; on other no tabs | 240ms |
+| Card with a link | lifts 2px, its border darkens a step, an optional soft shadow (blur 24px, 10% ink at most, only on hover) | 180ms, border 140 / 200ms |
+| Card without a link | nothing (`.m-nolift`) | |
+| Photograph in a linked card or link | scales 1.02 to 1.03 inside its frame (`overflow: hidden`); the frame, card and boxes never grow; never dims, fades or takes an overlay; a product card's name underlines with it (`.m-zoom` for any other wrapper) | 600ms |
+| Focus | a 2px ring in the accent, its offset settling from 6px to 2px | 200ms |
+| Field | the action border and a 3px soft ring | 140ms |
+| `.m-switch`, `.m-check` (tech) | the knob slides 16px and stretches 4px while pressed; the tick draws; on other they jump | 180, 90, 160ms |
+| Copy button (tech) | the glyph swaps to a check in place, holds 1.5 to 2 s, returns | 150ms |
 
-## 2. Four questions before any animation
+FAQs show every answer open (`system.css`): no accordion, and nothing ever animates height,
+max-height or padding. Hooks: `[data-m-loop]` (your own CSS loop, tech), `data-ui-loop` (a card
+group's one fragment loop, tech), `data-m-count` (tech hero only), `.m-link`, `.m-zoom`, `.m-nolift`.
 
-1. **How often will someone see it?** Once per visit (hero load, a section reveal): it can take its
-   time. Many times per visit (hover, menu, accordion): fast and small. Hundreds of times (keyboard
-   actions, typing): no animation.
-2. **What is it for?** Valid answers: it shows where something came from, it confirms an action, it
-   keeps a change from being jarring, it explains how the product works, it is the signature moment.
-   "It looks nice" is only valid for the signature moment.
-3. **Which easing?** Entering or leaving: ease-out, so movement starts the instant the eye arrives.
-   Moving between two places on screen: ease-in-out. Colour and opacity on hover: `ease`. Constant
-   travel (marquee, progress): `linear`. `ease-in` makes interfaces feel slow because the first frames
-   barely move; do not use it. The CSS keyword curves are weak, so use the tokens below.
-4. **How long?** Press feedback 100–160ms. Hover 150–200ms. Menus and popovers 150–250ms. Dialogs and
-   drawers 250–450ms. Section and hero reveals 500–900ms. Leaving is quicker than arriving (about 70%).
+## Loops inside a card's visual (tech)
 
-## 3. Tokens
+House rule: a bit faster, and repeating.
 
-```css
-:root {
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);      /* enters, exits, reveals */
-  --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);   /* things that travel while visible */
-  --ease-soft: cubic-bezier(0.33, 1, 0.68, 1);     /* long quiet reveals, image scale */
-  --t-press: 140ms;
-  --t-hover: 180ms;
-  --t-ui: 240ms;
-  --t-reveal: 800ms;
-}
-```
+- One cycle is 2.5 to 4 s (`--m-cycle`, 3.2 s default), then it starts again. It is seeded on its
+  finished picture and never shows an empty window: a ui.js fragment rests 600ms on it before the
+  first cycle; a `[data-m-loop]` starts at once; the last 10 to 15% of each cycle holds the finished
+  picture, and a reset dims and rewrites, never blanks.
+- The pointer or keyboard focus entering its card restarts it from the top (not in its first
+  800ms). A paused loop stays paused. The card, its panel and the window never move: no zoom, tilt
+  or camera pan inside the window.
+- One subject per cycle (a pointer clicks, a status turns, a bar fills, a line is written): one
+  change every 1 to 2 s, each change 300ms or less. Several subjects: the next one each cycle. A
+  changing label never shows two words at once.
+- One fragment loop per card group (`data-ui-loop`); the other fragments hold their finished
+  picture and play while the pointer rests on their card. A small diagram card's pulse is that
+  card's own loop, on the same cycle, restart and pause rules (house rule: pulses running along the
+  lines); system.js never holds it (`data-ui-still` does not reach a diagram). Below the hero, two
+  loops are never on one screen: in a group with a pulsing diagram, give the fragments
+  `data-ui-still` too, or hold the diagram with `data-dg-still` (it then plays under the pointer).
+- A page's own CSS loop sits in `[data-m-loop]`, every keyframe on `var(--m-cycle)`, `--m-still`
+  (0 to 1) the finished frame, a 48px band (`--m-safe`) kept clear for the pause button.
+- Life signs inside the looping visual only: spinner 1s (12 to 16px, then a check), live dot 2.4s
+  (the dot still, a ring grows and fades), caret 1s with a hard step inside a field, level bars .6s.
+  No typing dots, no lone pulsing dot elsewhere, no block cursor after a headline.
+- Kinds of card story (each in a box of fixed height): a prompt types at 12 to 20 characters a
+  second and holds; an answer streams about a bubble a second; a notification enters at the top and
+  the oldest leaves through the fade; a checklist ticks about once a second; a calendar's events
+  fade in one by one; a pointer glides about 200px in 1 s, presses (scale .96 at least, a 28px ring)
+  and holds. A speaker or avatar front item changes no more than every 3 s. A chart stays still.
+- Not yet placed, so not used: a stepping slot strip, a before/after divider, path-following items,
+  a dock tab that grows, a pointer-linked mascot, a comet along a hero strand.
 
-Name the properties you animate. `transition: all` animates things you did not intend (and costs
-layout); write `transition: transform var(--t-press) var(--ease-out)`.
+## Tech budget
 
-## 4. Recipes
+- **One timed loop** a page, in the hero or the `[data-visual]` frame, in whatever form (a story, a
+  reel, a lit border, a live ground, a turning object, a marquee); its life signs are part of it.
+  One timed loop plus the one effect at most; with a live effect in the hero, no other timed loop
+  runs. Never two self-moving things in one 900px window, never two loops in one panel. Card loops
+  (one per card group), diagram pulses (one per diagram card) and the dealt moments are outside
+  this count.
+- **A count** once a page (`data-m-count` or the `counter-rolls` moment, never both): on load in the
+  hero (1000ms, 1.2 s at most), or as the dealt counter moment in its own section. On the open
+  ground, never in a card, panel or `[data-visual]`; its width reserved; the final figure in the
+  HTML, shown under reduced motion, without script and on phones; never a year, price or phone
+  number. A live counter changes only its last one to three digits.
+- **Load:** hero text is in place on the first frame on every kind, never faded or moved. On tech at
+  most one load-once motion inside the hero or `[data-visual]` (a visual assembling, 600 to
+  1200ms), settled by 1.5 s; a click swap 400 to 600ms. No gate, loader or intro.
+- **Pause:** anything still moving 5 s after it is seen has one round pause button per panel: a
+  solid 32px disc, 12px in from the bottom-right (in a card beside its title), always shown or
+  fading in on hover and focus, the same size and place on every card, never over copy, never on a
+  still. A click freezes the frame and swaps to a play glyph (`ui.pausable(panel, ctrl)` for your
+  own movers). Scroll-driven moments need none.
+- **Timed loops start on load** and never start, stop or resume on scroll; an IntersectionObserver
+  only mounts lazily. A canvas may skip drawing off screen only on a clock from load, so no visible
+  start shows on return. A hidden tab may pause everything.
 
-All recipes keep content visible when JavaScript is off or slow: the hidden state only applies under
-`html.js`, which a one-line inline script sets.
+## Scroll
 
-```html
-<script>document.documentElement.classList.add('js')</script>
-```
+- **Other kinds, and every card on every kind:** nothing animates on scroll. No pinned or sticky
+  scene, scroll-snap, scroll or view timeline, reveal of any kind (fade, rise, stagger, mask wipe,
+  letters filling, words lighting, lines drawing), parallax, drift, scroll-tinted ground, progress
+  line, scroll-spy marker or count on view.
+- **Tech:** the big scene and one or two dealt section moments may follow the scroll, each inside
+  its own section (`data-big-scene` with `{"hold": 1}`, `data-moment`), which stays 1H or 2H
+  (`scenes.md`, Its height), pinned only with `position: sticky` inside that box. Its text is live and visible without the motion (opacity 1,
+  4.5:1 at every step); reduced motion and no script show the finished still; phones get the still
+  or a light version (transform and opacity, no WebGL); `perf.mjs` passes. It never moves a card, a
+  photograph, pricing, an FAQ, a quote block or the footer. Driven by native `animation-timeline`, a
+  passive scroll read written to a custom property once a frame, or GSAP ScrollTrigger scoped to that
+  section without its pin. No smooth-scroll library (Lenis, Locomotive, ScrollSmoother) on any page,
+  no animation library at all on other.
+- The header and the phone bar look the same at every scroll position.
 
-### Hero load sequence (CSS only)
+## Reduced motion, no script, phones
 
-Stagger at most four things. With a headline of two lines this is short and reads as one gesture.
+Colours still change; menus fade; the tab indicator jumps; the underline appears without travelling
+(`transition-property: opacity, color, background-color, border-color` on links, `.m-tab-ind`,
+`.m-switch::before`, `.m-check::before`). Every loop, effect, moment and scene shows its finished
+frame, marquees stand as a still row, numbers show their final text, pause buttons are hidden. On a
+phone card loops and effects hold their finished picture or poster, heavy canvases become stills,
+there are no hover states and no pointer simulations.
 
-```css
-@media (prefers-reduced-motion: no-preference) {
-  .js [data-rise] {
-    opacity: 0;
-    transform: translateY(18px);
-    animation: rise var(--t-reveal) var(--ease-out) forwards;
-    animation-delay: calc(var(--i, 0) * 90ms + 120ms);
-  }
-}
-@keyframes rise { to { opacity: 1; transform: none; } }
-```
+## Never
 
-```html
-<h1 data-rise style="--i:0">…</h1>
-<p data-rise style="--i:1">…</p>
-<a data-rise style="--i:2" class="button">…</a>
-```
-
-### Masked line reveal (the classic gallery headline)
-
-Each line slides up from behind its own baseline. Because headlines are capped at two lines, you set
-the line breaks yourself and wrap each line.
-
-```html
-<h1 class="lines">
-  <span class="line"><span data-line style="--i:0">Stools for</span></span>
-  <span class="line"><span data-line style="--i:1">small kitchens</span></span>
-</h1>
-```
-
-```css
-.lines .line { display: block; overflow: hidden; padding-bottom: 0.08em; margin-bottom: -0.08em; }
-.lines [data-line] { display: block; }
-@media (prefers-reduced-motion: no-preference) {
-  .js .lines [data-line] {
-    transform: translateY(105%);
-    animation: line-up 900ms var(--ease-out) forwards;
-    animation-delay: calc(var(--i) * 110ms + 150ms);
-  }
-}
-@keyframes line-up { to { transform: none; } }
-```
-
-The `padding-bottom` / negative margin pair stops descenders (g, y, p) being clipped by the mask.
-On a narrow phone the two authored lines may each wrap; check the mobile screenshot, and if they do,
-author a shorter mobile break with a `<br class="only-wide">` pattern or reduce the size.
-
-### Reveal on scroll (once)
-
-For the two or three sections that deserve it, not for every block.
-
-```css
-@media (prefers-reduced-motion: no-preference) {
-  .js [data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity 700ms var(--ease-out), transform 900ms var(--ease-out); }
-  .js [data-reveal].is-in { opacity: 1; transform: none; }
-}
-```
-
-```js
-const io = new IntersectionObserver((entries) => {
-  for (const e of entries) if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
-}, { rootMargin: '0px 0px -12% 0px', threshold: 0.1 });
-document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
-```
-
-Never attach reveals with a scroll listener, never replay them when the element re-enters, and never
-leave anything at `opacity: 0` if the observer fails to fire (the `html.js` gate handles no-JS; the
-`unobserve` handles replays).
-
-### Image shutter
-
-An image opens from one edge while scaling down slightly inside its frame. Gallery staple; use it for
-the one hero or showcase image.
-
-```css
-.shutter { overflow: hidden; }
-@media (prefers-reduced-motion: no-preference) {
-  .js .shutter { clip-path: inset(0 0 100% 0); transition: clip-path 1100ms var(--ease-in-out); }
-  .js .shutter img { transform: scale(1.12); transition: transform 1500ms var(--ease-soft); }
-  .js .shutter.is-in { clip-path: inset(0); }
-  .js .shutter.is-in img { transform: none; }
-}
-```
-
-### Press and hover
-
-```css
-.button { transition: transform var(--t-press) var(--ease-out), background-color var(--t-hover) ease, color var(--t-hover) ease; }
-.button:active { transform: scale(0.97); }
-.link { text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 0.2em; text-decoration-thickness: 0.07em; transition: text-decoration-color var(--t-hover) ease; }
-@media (hover: hover) and (pointer: fine) {
-  .button:hover { background-color: var(--accent-strong); }
-  .link:hover { text-decoration-color: currentColor; }
-}
-```
-
-Hover styles go behind `(hover: hover)` because touch devices fire hover on tap and leave it stuck.
-Hover should raise contrast, never lower it. Do not change font weight on hover (the text reflows).
-Do not lift or scale every card on hover; one consistent, small response is enough.
-
-### Scroll-linked progress without JavaScript
-
-For a wordmark that scales as the hero leaves, an image that drifts a few percent, or a progress bar.
-Wrap in `@supports` so browsers without scroll timelines get the static state.
-
-```css
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .drift { animation: drift linear both; animation-timeline: view(); animation-range: entry 0% exit 100%; }
-    @keyframes drift { from { transform: translateY(-4%); } to { transform: translateY(4%); } }
-  }
-}
-```
-
-Keep the travel small (under 8% of the element). Large parallax makes text hard to read and looks
-dated.
-
-### Pinned story
-
-A section whose heading stays put while items pass. Use `position: sticky`; do not hijack scrolling.
-
-```css
-.story { display: grid; grid-template-columns: 5fr 7fr; gap: var(--gutter); align-items: start; }
-.story__title { position: sticky; top: 18vh; }
-@media (max-width: 800px) { .story { grid-template-columns: 1fr; } .story__title { position: static; } }
-```
-
-### List with image preview (work index, menu, team)
-
-Rows of large text; hovering a row shows its image in a fixed frame beside or behind the list.
-
-```css
-.index { position: relative; }
-.index__row { display: flex; justify-content: space-between; align-items: baseline; padding-block: 0.35em; font-size: var(--step-4); }
-.index__frame { position: absolute; inset-block: 0; right: 0; width: 34%; pointer-events: none; }
-.index__frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity var(--t-ui) ease; }
-.index__frame img.is-on { opacity: 1; }
-@media (hover: hover) and (pointer: fine) { .index:hover .index__row:not(:hover) { opacity: 0.35; } .index__row { transition: opacity var(--t-hover) ease; } }
-```
-
-On touch there is no hover, so each row shows its image inline above the title instead.
-
-### Accordion
-
-```css
-.acc__panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 320ms var(--ease-out); }
-.acc__panel > div { overflow: hidden; }
-.acc[open] .acc__panel, .acc__item.is-open .acc__panel { grid-template-rows: 1fr; }
-```
-
-Animating `grid-template-rows` from `0fr` to `1fr` opens to the content's real height without measuring
-it in JavaScript.
-
-### Menu or dialog
-
-```css
-.menu { transform-origin: top right; transition: opacity var(--t-ui) var(--ease-out), transform var(--t-ui) var(--ease-out); }
-.menu[hidden], .menu.is-closed { opacity: 0; transform: scale(0.97) translateY(-6px); pointer-events: none; }
-```
-
-Things open from where they were triggered (`transform-origin` at the trigger). Nothing enters from
-`scale(0)`; start at 0.95–0.98. A centred dialog is the one case that scales from its centre.
-
-## 5. Signature moves
-
-The direction sheet names one. Each of these was seen repeatedly on the studied gallery sites.
-
-| Move | What happens | Build with |
-| --- | --- | --- |
-| Masked headline | Lines rise from behind their baselines on load | Masked line reveal recipe |
-| Shutter image | Hero or showcase image opens from an edge, settling from 1.12 scale | Image shutter recipe |
-| Scaling wordmark | A giant wordmark shrinks or grows a few percent as the hero scrolls out | Scroll-linked recipe on `scale` |
-| Pinned story | A heading holds while its items scroll past | Sticky recipe |
-| Index with preview | Text rows; the hovered row shows its image | List with image preview recipe |
-| Curtain footer | The last section is revealed from under the page as you reach the end | `position: sticky; bottom: 0` footer under a main with a background and `z-index` |
-| Slow crossfade | Hero image crossfades through 3–4 photographs, 5–6s each | Stacked images, opacity keyframes, pause when the tab is hidden |
-| Edge-to-edge marquee | One line of very large type travels sideways, slowly | Duplicate the content, `translateX(-50%)` linear loop, pause on hover and under reduced motion |
-| Drag row | A horizontally scrollable row of large images with scroll snapping | `overflow-x: auto; scroll-snap-type: x mandatory`, no library |
-| Colour by chapter | Each chapter is its own full-bleed colour field, so the ground changes at section edges; a fixed header takes the ink of the chapter beneath | Section backgrounds in CSS; `base.js` sets `--header-ink` from `data-ink`. Never recolour the whole page from an observer |
-
-Pick by subject. A portfolio wants the index with preview; a restaurant wants the slow crossfade; a
-product wants the shutter on its hero object. If the move says nothing about the subject, it is
-decoration and the page is better without it.
-
-## 6. Reduced motion and performance
-
-- `prefers-reduced-motion: reduce` means fewer and gentler, not none: keep opacity and colour changes,
-  drop travel, scale, parallax and autoplay. All recipes above are written inside
-  `no-preference` blocks so the reduced state is simply the finished state.
-- Animate `transform`, `opacity` and `clip-path`. Animating `width`, `height`, `top`, `left`, `margin`
-  or `padding` forces layout on every frame. `grid-template-rows` for accordions is the accepted
-  exception because it is short and rare.
-- Do not drive many children from one changing CSS variable on a parent; set the transform on the
-  element that moves.
-- `will-change` only on an element that is about to animate, removed afterwards.
-- Pause loops when off screen or when the tab is hidden.
-- No scroll hijacking, no smooth-scroll library by default, no custom cursor. They cost usability,
-  which is 30% of an Awwwards score and the line most winners score lowest on.
-
-## 7. What gives generated motion away
-
-- The same fade-up on every block.
-- A dozen staggered entrances in the hero.
-- Hover lift or zoom on every card and image.
-- Bounce or elastic easing on interface elements.
-- Infinite loops that mean nothing: pulsing dots, floating shapes, shimmering text, rotating badges.
-- A reveal that never fires and leaves a blank band in the page. Run `inspect.mjs` after the motion
-  pass and look at every screenshot for missing content.
+- A card, row or tile that reveals, staggers, slides or fades in as the page scrolls; parallax or a
+  scroll scrub outside the tech page's dealt moments and scene.
+- A card that tilts, flips, scales, follows the pointer or glows at the cursor; a magnetic button.
+- A carousel, a slider that advances by itself, timed tabs, a rotating notice, a logo marquee.
+- Blinking at random: twinkling dots, glitter, flicker, hue cycling, scrambled text; every change
+  shows a state, a step or real data.
+- A loop that plays once (outside a card story's replay), a card loop's cycle over 4 s, two loops in
+  one panel.
+- A hover slower than its token, an overshooting ease, a delay before a button reacts, a second
+  underline or indicator style.
