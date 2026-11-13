@@ -80,6 +80,7 @@ Review against [04-legal-compliance.md](./references/04-legal-compliance.md):
 2. **Cookie Consent:** Add an unobtrusive consent banner before setting tracking or analytics cookies.
 3. **Real Business Identity:** Verify that the footer displays an official contact email, company name, and physical/registered address.
 4. **Transparent Consent:** Verify explicit opt-in checkboxes for email capture (no pre-checked boxes).
+5. **Screen Reader & Accessibility (WCAG 2.1 AA):** Verify skip links, semantic landmarks (`banner`, `main`, `contentinfo`), strict heading hierarchy, `.sr-only` static text for animated/typewriter elements, `aria-live` regions for dynamic updates, modal focus management/traps, and accessible tree verification.
 
 ---
 

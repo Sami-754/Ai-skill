@@ -1,0 +1,3 @@
+[submodule "skills/bang-motion"]
+	path = skills/bang-motion
+	url = https://github.com/bangtutorial/bang-motion

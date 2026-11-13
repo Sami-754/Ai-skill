@@ -225,6 +225,15 @@
       "skillFolderHash": "53b72b1c2255a82538e355d912ad4c42c2622e36",
       "installedAt": "2026-11-04T16:55:05.622Z",
       "updatedAt": "2026-11-04T16:55:05.622Z"
+    },
+    "rendercv": {
+      "source": "rendercv/rendercv-skill",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/rendercv/rendercv-skill.git",
+      "skillPath": "skills/rendercv/SKILL.md",
+      "skillFolderHash": "64bef093138a9fabf54d54906da4a1f2e1a84600",
+      "installedAt": "2026-11-08T14:48:13.045Z",
+      "updatedAt": "2026-11-08T14:48:13.045Z"
     }
   },
   "dismissed": {

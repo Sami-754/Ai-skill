@@ -7,7 +7,7 @@ description: The HyperFrames CLI by job - scaffold, check, look at frames, edit 
 
 # HyperFrames CLI
 
-Run `npx hyperframes <command>` unless the project gives a wrapper; then use the wrapper. It needs Node.js 22+ and FFmpeg. Every command has `--help`; most take `--json`, and a failure prints `✗ …`, a `Fix:` line and exits non-zero.
+Run `hyperframes <command>` unless the project gives a wrapper; then use the wrapper. It needs Node.js 22+ and FFmpeg. Every command has `--help`; most take `--json`, and a failure prints `✗ …`, a `Fix:` line and exits non-zero.
 
 ## Commands by job
 
@@ -22,19 +22,19 @@ Run `npx hyperframes <command>` unless the project gives a wrapper; then use the
 | Media and sound | `media-treatment`, `grade-compare`, `remove-background`, `tts`, `transcribe`, `beats`, `normalize-audio` (`/media-use`) |
 | Show and ship | `preview`, `present` (`/slideshow`), `render`, `publish`, `cloud`, `lambda`, `cloudrun` |
 | Desktop app | `open`, `catch-up` |
-| Upkeep | `doctor`, `browser`, `upgrade`, `skills`, `usage`, `clean`, `feedback` |
+| Upkeep | `doctor`, `browser`, `upgrade --check`, `skills`, `clean` |
 
 `validate`, `inspect` and `layout` are deprecated aliases of `check`; `events` is telemetry for skills' own scripts. Don't run them.
 
 ## The loop
 
-1. Write, then `npx hyperframes lint` after the first pass and after structural changes.
-2. `npx hyperframes check --json` and fix every error. While a lint error remains the layout and contrast audits don't run; "0 samples" means nothing was checked. Contrast failures carry a `suggestedColor`. A finding at a single sample (an entrance in flight) is info; a 3 s+ video with no visible change fails `sweep_static`.
-3. `npx hyperframes snapshot` and read the PNGs (under `.hyperframes/artifacts/snapshots/`): that is how you see the video. With sub-compositions, snapshot a midpoint of every scene; tiny unstyled content or a missing hero is a mount defect (`../hyperframes/references/format.md`).
-4. `npx hyperframes preview --background`, check the URL answers 200, give the person the project URL and wait, unless they asked for the file or for no stops. Passing checks alone is not a reason to render.
-5. Time to render (step 4): `npx hyperframes render --quality looks -o out.mp4` (`draft` while iterating, `delivery` for the final; paid plan: `cloud render --fps <data-fps> --quality high -o out.mp4`). Confirm the file is non-empty and its `ffprobe` duration matches the root `data-duration`, then look at decoded frames.
+1. Write, then `hyperframes lint` after the first pass and after structural changes.
+2. `hyperframes check --json` and fix every error. While a lint error remains the layout and contrast audits don't run; "0 samples" means nothing was checked. Contrast failures carry a `suggestedColor`. A finding at a single sample (an entrance in flight) is info; a 3 s+ video with no visible change fails `sweep_static`.
+3. `hyperframes snapshot` and read the PNGs (under `.hyperframes/artifacts/snapshots/`): that is how you see the video. With sub-compositions, snapshot a midpoint of every scene; tiny unstyled content or a missing hero is a mount defect (`../hyperframes/references/format.md`).
+4. `hyperframes preview --background`, check the URL answers 200, give the person the project URL and wait, unless they asked for the file or for no stops. Passing checks alone is not a reason to render.
+5. Time to render (step 4): `hyperframes render --quality looks -o out.mp4` (`draft` while iterating, `delivery` for the final; paid plan: `cloud render --fps <data-fps> --quality high -o out.mp4`). Confirm the file is non-empty and its `ffprobe` duration matches the root `data-duration`, then look at decoded frames.
 
-"This element" or the current selection: `npx hyperframes preview --context --json --context-fields selection`; `no-selection` means ask them to click it.
+"This element" or the current selection: `hyperframes preview --context --json --context-fields selection`; `no-selection` means ask them to click it.
 
 ## Edit the timeline
 
@@ -49,7 +49,7 @@ These are the edits Studio itself makes, so the result stays in Studio's shape.
 
 ## Project history
 
-Every write is kept and can be undone. At the start of a turn, `npx hyperframes history begin --who <you> --label "<plan>"`, then `history --since mine --who <you>` to see what the person changed; build on their edits. A check failed or they say it got worse: `history undo --who <you>`, never hand-edit back. End the turn with `history end`.
+Every write is kept and can be undone. At the start of a turn, `hyperframes history begin --who <you> --label "<plan>"`, then `history --since mine --who <you>` to see what the person changed; build on their edits. A check failed or they say it got worse: `history undo --who <you>`, never hand-edit back. End the turn with `history end`.
 
 <!-- /history (trial) -->
 
@@ -65,13 +65,13 @@ Every write is kept and can be undone. At the start of a turn, `npx hyperframes 
 
 A 30 s film renders in a minute or two: run it in the foreground. Detach only a render longer than your tool's timeout (`HYPERFRAMES_RENDER_DETACHED=1`, its own group, output to a log) and wait with `until grep -qE 'Render (complete|failed)' render.log; do sleep 5; done`, never `pgrep -f`, which matches its own loop and waits until the tool times out.
 
-After a verified render, send one `feedback --rating`, plus a report for anything the person asked for that HyperFrames can't do, unless telemetry is off: `references/feedback.md`.
+After a verified render, confirm output integrity and visually inspect decoded frames before handing off to the user.
 
 ## When a command fails
 
 | Symptom | Fix |
 | --- | --- |
-| Chrome missing or won't start | `npx hyperframes browser ensure`; `doctor --json` always exits 0, gate on `.ok` |
+| Chrome missing or won't start | `hyperframes browser ensure`; `doctor --json` always exits 0, gate on `.ok` |
 | A heavy page isn't ready in time | Raise `--timeout` on `check` or `snapshot` |
 | Unusual codec looks blank | Keep `--proxy` on (the default) |
 | Render slow on Linux | The summary's second line says `screenshot` + `software gpu`: the slow path |
@@ -92,6 +92,6 @@ Read the row before running its command.
 | `doctor`, `browser` | `references/doctor-browser.md` |
 | `auth`, `cloud`, template variables | `references/cloud.md` |
 | `lambda`, `cloudrun` | `references/lambda.md`, `references/cloudrun.md` |
-| `info`, `upgrade`, `compositions`, `timeline`, `docs`, `usage`, telemetry | `references/upgrade-info-misc.md` |
+| `info`, `upgrade --check`, `compositions`, `timeline`, `docs`, telemetry | `references/upgrade-info-misc.md` |
 | `--strict` flags, run ids, `clean`, shader lint, JSON paths | `references/conventions.md` |
 | `keyframes` | `../hyperframes/references/motion.md` (Seeing motion) |
